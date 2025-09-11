@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Visual: Venda Simples com Cartão - Pagar.me</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony Neutrals -->
+    <!-- Application Structure Plan: A single-page, vertical timeline/stepper structure, mirroring the previously created guide for consistency. Each step of the API flow is a distinct card. This structure is ideal for presenting a linear, step-by-step process clearly and effectively. -->
+    <!-- Visualization & Content Choices: Report Info: Step-by-step API guide for a simple card transaction -> Goal: Display the process flow and data dependencies in a non-split scenario -> Viz/Presentation Method: Static cards with tabs for "Explicação", "Requisição", and "Resposta". Code blocks for JSON payloads. -> Interaction: Tab-switching to navigate content within each step. -> Justification: Provides a clean, easy-to-read guide that is visually consistent with the split payment guide, creating a cohesive set of documentation. -> Library/Method: Vanilla JS for tab functionality, Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #3f3f46;
+        }
+        .code-block {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'monospace';
+            font-size: 0.875rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .highlight {
+            background-color: #a5b4fc;
+            color: #1e1b4b;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .tab {
+            transition: all 0.3s ease;
+        }
+        .tab-active {
+            background-color: #00b055;
+            color: #ffffff;
+        }
+        .step-card {
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Guia Visual: Venda Simples com Cartão</h1>
+            <p class="mt-4 text-lg text-gray-600">Um guia do fluxo da API Pagar.me para uma transação padrão.</p>
+            <p class="mt-4 text-sm text-gray-500">Para detalhes completos sobre cada endpoint, consulte a <a href="https://docs.pagar.me/reference/" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline font-medium">documentação oficial da Pagar.me</a>.</p>
+        </header>
+
+        <div class="space-y-8">
+
+            <!-- Step 1 -->
+            <div id="step-1" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                <div class="flex items-center mb-4">
+                    <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">1</div>
+                    <h2 class="text-xl font-semibold ml-4 text-gray-800">Cadastro do Cliente</h2>
+                </div>
+                <div class="border-b border-gray-200 mb-4">
+                    <nav class="flex space-x-2" data-step="1">
+                        <button class="tab tab-active py-2 px-4 rounded-t-lg font-medium" data-tab="explanation">Explicação</button>
+                        <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="request">Requisição</button>
+                        <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="response">Resposta</button>
+                    </nav>
+                </div>
+                <div class="content-container">
+                    <div class="tab-content" data-step="1" data-tab="explanation">
+                        <p>O primeiro passo é cadastrar o cliente que fará a compra. O `customer_id` retornado será usado nas próximas etapas.</p>
+                    </div>
+                    <div class="tab-content hidden" data-step="1" data-tab="request">
+                        <div class="code-block" id="request-1">POST /customers
+{
+  "name": "Tony Stark",
+  "email": "avengerstark@starkindustries.com.br",
+  "document": "87232965001",
+  "type": "individual",
+  "address": {
+    "line_1": "375, Av. General Justo, Centro",
+    "line_2": "8º andar",
+    "zip_code": "20021130",
+    "city": "Rio de Janeiro",
+    "state": "RJ",
+    "country": "BR"
+  },
+  "phones": {
+    "home_phone": {
+      "country_code": "55",
+      "number": "22180513",
+      "area_code": "21"
+    }
+  }
+}</div>
+                    </div>
+                    <div class="tab-content hidden" data-step="1" data-tab="response">
+                        <div class="code-block" id="response-1">{
+  "id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
+  "name": "Tony Stark",
+  "status": "active"
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div id="step-2" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                 <div class="flex items-center mb-4">
+                    <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">2</div>
+                    <h2 class="text-xl font-semibold ml-4 text-gray-800">Criação do Token do Cartão</h2>
+                </div>
+                 <div class="border-b border-gray-200 mb-4">
+                    <nav class="flex space-x-2" data-step="2">
+                        <button class="tab tab-active py-2 px-4 rounded-t-lg font-medium" data-tab="explanation">Explicação</button>
+                        <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="request">Requisição</button>
+                        <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="response">Resposta</button>
+                    </nav>
+                </div>
+                <div class="content-container">
+                    <div class="tab-content" data-step="2" data-tab="explanation">
+                        <p>Esta etapa é executada no front-end da sua aplicação (por exemplo, no navegador do cliente), usando sua <strong>chave pública (`public_key`)</strong> para garantir que os dados sensíveis do cartão não passem pelo seu servidor.</p>
+                    </div>
+                    <div class="tab-content hidden" data-step="2" data-tab="request">
+                        <div class="code-block" id="request-2">POST /tokens
+{
+  "type": "card",
+  "card": {
+    "number": "4242424242424242",
+    "holder_name": "Tony Stark",
+    "exp_month": 12,
+    "exp_year": 2030,
+    "cvv": "123"
+  }
+}</div>
+                    </div>
+                    <div class="tab-content hidden" data-step="2" data-tab="response">
+                        <div class="code-block" id="response-2">{
+  "id": "<span class="highlight">token_xxxxxxxxxxxxxxxx</span>",
+  "type": "card"
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div id="step-3" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                 <div class="flex items-center mb-4">
+                    <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">3</div>
+                    <h2 class="text-xl font-semibold ml-4 text-gray-800">Criação do Cartão a partir do Token</h2>
+                </div>
+                 <div class="border-b border-gray-200 mb-4">
+                    <nav class="flex space-x-2" data-step="3">
+                        <button class="tab tab-active py-2 px-4 rounded-t-lg font-medium" data-tab="explanation">Explicação</button>
+                        <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="request">Requisição</button>
+                        <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="response">Resposta</button>
+                    </nav>
+                </div>
+                <div class="content-container">
+                    <div class="tab-content" data-step="3" data-tab="explanation">
+                        <p>No seu back-end, use o `customer_id` (do Passo 1) e o `token` (do Passo 2) para salvar o cartão de forma segura no cofre da Pagar.me.</p>
+                    </div>
+                    <div class="tab-content hidden" data-step="3" data-tab="request">
+                        <div class="code-block" id="request-3">POST /customers/<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>/cards
+{
+  "token": "<span class="highlight">token_xxxxxxxxxxxxxxxx</span>"
+}</div>
+                    </div>
+                    <div class="tab-content hidden" data-step="3" data-tab="response">
+                        <div class="code-block" id="response-3">{
+  "id": "<span class="highlight">card_xxxxxxxxxxxxxxxx</span>",
+  "last_four_digits": "4242",
+  "status": "active"
+}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 4 -->
+            <div id="step-4" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                 <div class="flex items-center mb-4">
+                    <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">4</div>
+                    <h2 class="text-xl font-semibold ml-4 text-gray-800">Criação de um Pedido</h2>
+                </div>
+                 <div class="border-b border-gray-200 mb-4">
+                    <nav class="flex space-x-2" data-step="4">
+                        <button class="tab tab-active py-2 px-4 rounded-t-lg font-medium" data-tab="explanation">Explicação</button>
+                        <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="request">Requisição</button>
+                        <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="response">Resposta</button>
+                    </nav>
+                </div>
+                <div class="content-container">
+                    <div class="tab-content" data-step="4" data-tab="explanation">
+                        <p>Com o cliente e o cartão salvos, criamos o pedido. O `card_id` é usado aqui para indicar o meio de pagamento. Este pedido será capturado automaticamente.</p>
+                    </div>
+                    <div class="tab-content hidden" data-step="4" data-tab="request">
+                        <div class="code-block" id="request-4">POST /orders
+{
+  "customer_id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
+  "items": [
+    {
+      "amount": 15000,
+      "description": "Item de Teste",
+      "quantity": 1,
+      "code": "ITEM001"
+    }
+  ],
+  "payments": [
+    {
+      "payment_method": "credit_card",
+      "credit_card": {
+        "installments": 1,
+        "capture": true,
+        "card_id": "<span class="highlight">card_xxxxxxxxxxxxxxxx</span>"
+      }
+    }
+  ]
+}</div>
+                    </div>
+                    <div class="tab-content hidden" data-step="4" data-tab="response">
+                        <div class="code-block" id="response-4">{
+  "id": "or_xxxxxxxxxxxxxxxx",
+  "status": "paid",
+  "charges": [
+    {
+      "id": "<span class="highlight">ch_xxxxxxxxxxxxxxxx</span>",
+      "amount": 15000,
+      "status": "paid"
+    }
+  ]
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div id="step-5" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                 <div class="flex items-center mb-4">
+                    <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">5</div>
+                    <h2 class="text-xl font-semibold ml-4 text-gray-800">Cancelamento da Cobrança</h2>
+                </div>
+                 <div class="border-b border-gray-200 mb-4">
+                    <nav class="flex space-x-2" data-step="5">
+                        <button class="tab tab-active py-2 px-4 rounded-t-lg font-medium" data-tab="explanation">Explicação</button>
+                        <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="request">Requisição</button>
+                        <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="response">Resposta</button>
+                    </nav>
+                </div>
+                <div class="content-container">
+                    <div class="tab-content" data-step="5" data-tab="explanation">
+                        <p>Por fim, se necessário, cancele a cobrança (estorno) usando o `charge_id` retornado no passo anterior. É possível realizar um estorno <strong>parcial</strong> (enviando o `amount`) ou <strong>total</strong> (omitindo o `amount`).</p>
+                    </div>
+                    <div class="tab-content hidden" data-step="5" data-tab="request">
+                        <div class="code-block" id="request-5">DELETE /charges/<span class="highlight">ch_xxxxxxxxxxxxxxxx</span>
+{
+  "amount": 15000
+}</div>
+                    </div>
+                    <div class="tab-content hidden" data-step="5" data-tab="response">
+                        <div class="code-block" id="response-5">{
+  "id": "<span class="highlight">ch_xxxxxxxxxxxxxxxx</span>",
+  "amount": 15000,
+  "status": "canceled"
+}</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const allTabs = document.querySelectorAll('.tab');
+            allTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const step = tab.parentElement.dataset.step;
+                    const tabName = tab.dataset.tab;
+                    
+                    document.querySelectorAll(`.tab[data-step="${step}"]`).forEach(t => t.classList.remove('tab-active'));
+                    tab.classList.add('tab-active');
+
+                    document.querySelectorAll(`.tab-content[data-step="${step}"]`).forEach(c => c.classList.add('hidden'));
+                    document.querySelector(`.tab-content[data-step="${step}"][data-tab="${tabName}"]`).classList.remove('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
