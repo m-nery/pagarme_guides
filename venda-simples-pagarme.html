@@ -283,7 +283,7 @@
                     const step = tab.parentElement.dataset.step;
                     const tabName = tab.dataset.tab;
                     
-                    document.querySelectorAll(`.tab[data-step="${step}"]`).forEach(t => t.classList.remove('tab-active'));
+                    tab.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
                     tab.classList.add('tab-active');
 
                     document.querySelectorAll(`.tab-content[data-step="${step}"]`).forEach(c => c.classList.add('hidden'));
@@ -294,5 +294,4 @@
     </script>
 </body>
 </html>
-
 
