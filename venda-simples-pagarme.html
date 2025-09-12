@@ -49,6 +49,8 @@
         .json-string { color: #CE9178; }
         .json-number { color: #B5CEA8; }
         .json-boolean { color: #569CD6; }
+        .curl-command { color: #569CD6;}
+        .curl-header { color: #CE9178; }
     </style>
 </head>
 <body class="antialiased">
@@ -82,7 +84,11 @@
                         <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-cliente-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-cliente-1</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="1" data-tab="request">
-                        <div class="code-block" id="request-1">POST https://api.pagar.me/core/v5/customers
+                        <div class="code-block" id="request-1"><span class="curl-command">curl</span> --request POST \
+--url https://api.pagar.me/core/v5/customers \
+--header <span class="curl-header">'Authorization: Basic c2tfdGVzdF9zaW1wbGVleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
 {
   "name": "Tony Stark",
   "email": "avengerstark@starkindustries.com.br",
@@ -103,7 +109,8 @@
       "area_code": "21"
     }
   }
-}</div>
+}
+'</div>
                     </div>
                     <div class="tab-content hidden" data-step="1" data-tab="response">
                         <div class="code-block" id="response-1">{
@@ -135,7 +142,11 @@
                         <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-token-cart%C3%A3o-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-token-cartão-1</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="2" data-tab="request">
-                        <div class="code-block" id="request-2">POST https://api.pagar.me/core/v5/tokens
+                        <div class="code-block" id="request-2"><span class="curl-command">curl</span> --request POST \
+--url https://api.pagar.me/core/v5/tokens \
+--header <span class="curl-header">'Authorization: Basic cGtfdGVzdF9zaW1wbGVleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
 {
   "type": "card",
   "card": {
@@ -145,7 +156,8 @@
     "exp_year": 2030,
     "cvv": "123"
   }
-}</div>
+}
+'</div>
                     </div>
                     <div class="tab-content hidden" data-step="2" data-tab="response">
                         <div class="code-block" id="response-2">{
@@ -175,10 +187,15 @@
                         <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-cartao" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-cartao</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="3" data-tab="request">
-                        <div class="code-block" id="request-3">POST https://api.pagar.me/core/v5/customers/<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>/cards
+                        <div class="code-block" id="request-3"><span class="curl-command">curl</span> --request POST \
+--url https://api.pagar.me/core/v5/customers/<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>/cards \
+--header <span class="curl-header">'Authorization: Basic c2tfdGVzdF9zaW1wbGVleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
 {
   "token": "<span class="highlight">token_xxxxxxxxxxxxxxxx</span>"
-}</div>
+}
+'</div>
                     </div>
                     <div class="tab-content hidden" data-step="3" data-tab="response">
                         <div class="code-block" id="response-3">{
@@ -209,7 +226,11 @@
                         <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-pedido" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-pedido</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="4" data-tab="request">
-                        <div class="code-block" id="request-4">POST https://api.pagar.me/core/v5/orders
+                        <div class="code-block" id="request-4"><span class="curl-command">curl</span> --request POST \
+--url https://api.pagar.me/core/v5/orders \
+--header <span class="curl-header">'Authorization: Basic c2tfdGVzdF9zaW1wbGVleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
 {
   "customer_id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
   "items": [
@@ -230,7 +251,8 @@
       }
     }
   ]
-}</div>
+}
+'</div>
                     </div>
                     <div class="tab-content hidden" data-step="4" data-tab="response">
                         <div class="code-block" id="response-4">{
@@ -267,10 +289,15 @@
                         <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/cancelar-uma-cobran%C3%A7a" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/cancelar-uma-cobrança</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="5" data-tab="request">
-                        <div class="code-block" id="request-5">DELETE https://api.pagar.me/core/v5/charges/<span class="highlight">ch_xxxxxxxxxxxxxxxx</span>
+                        <div class="code-block" id="request-5"><span class="curl-command">curl</span> --request DELETE \
+--url https://api.pagar.me/core/v5/charges/<span class="highlight">ch_xxxxxxxxxxxxxxxx</span> \
+--header <span class="curl-header">'Authorization: Basic c2tfdGVzdF9zaW1wbGVleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
 {
   "amount": 15000
-}</div>
+}
+'</div>
                     </div>
                     <div class="tab-content hidden" data-step="5" data-tab="response">
                         <div class="code-block" id="response-5">{
@@ -288,23 +315,33 @@
     <script>
         function beautifyJSON() {
             document.querySelectorAll('.code-block').forEach(block => {
-                if (!block.textContent.includes('{') && !block.textContent.includes('}')) return;
+                let textContent = block.innerText || block.textContent;
                 
-                let html = block.innerHTML;
+                let jsonText;
+                const jsonMatch = textContent.match(/{[\s\S]*}/);
+                if (jsonMatch) {
+                    jsonText = jsonMatch[0];
+                } else {
+                    jsonText = textContent;
+                }
 
-                // Colore as chaves (ex: "name":)
-                html = html.replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2');
-
-                // Colore strings simples (que não contêm HTML)
-                html = html.replace(/:\s*"([^<"]*)"/g, ': <span class="json-string">"$1"</span>');
-
-                // Colore números
-                html = html.replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>');
+                if (!jsonText.includes('{') && !jsonText.includes('}')) return;
                 
-                // Colore booleanos
-                html = html.replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>');
+                try {
+                    // This is just to validate, we use regex for coloring
+                    JSON.parse(jsonText);
 
-                block.innerHTML = html;
+                    let coloredJson = jsonText
+                        .replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2')
+                        .replace(/:\s*"([^<"]*)"/g, ': <span class="json-string">"$1"</span>')
+                        .replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>')
+                        .replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>');
+
+                    block.innerHTML = block.innerHTML.replace(jsonText, coloredJson);
+
+                } catch (e) {
+                    // Not valid JSON, do nothing
+                }
             });
         }
 
