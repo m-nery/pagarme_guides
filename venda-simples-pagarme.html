@@ -126,6 +126,7 @@
                 <div class="content-container">
                     <div class="tab-content" data-step="2" data-tab="explanation">
                         <p>Esta etapa é executada no front-end da sua aplicação (por exemplo, no navegador do cliente), usando sua <strong>chave pública (`public_key`)</strong> para garantir que os dados sensíveis do cartão não passem pelo seu servidor.</p>
+                        <p style="margin-top: 1em;">O card token gerado tem validade de um minuto e é limitado a um uso único.</p>
                     </div>
                     <div class="tab-content hidden" data-step="2" data-tab="request">
                         <div class="code-block" id="request-2">POST https://api.pagar.me/core/v5/tokens
@@ -294,6 +295,7 @@
     </script>
 </body>
 </html>
+
 
 
 
