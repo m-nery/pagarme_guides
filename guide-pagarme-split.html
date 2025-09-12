@@ -75,7 +75,7 @@
                 <div class="content-container">
                     <div class="tab-content" data-step="1" data-tab="explanation">
                         <p>O primeiro passo é cadastrar os recebedores (sellers) que participarão da divisão de valores. Sua conta Pagar.me já possui um recebedor principal que será usado para representar o marketplace na regra de Split. Você pode verificar esse recebedor na dashboard Pagar.me no menu Recebedores. O recipient_id` retornado será usado na criação do pedido.</p>
-                        <p style="margin-top: 1em;">Uma observação importante: o documento do recebedor deverá ser igual ao documento da conta bancária, ou seja, só será permito transfência de valores para contas bancárias vinculadas ao CPF/CNPJO do recebedor. </p>
+                        <p style="margin-top: 1em;">Uma observação importante: o documento do recebedor deverá ser igual ao documento da conta bancária, ou seja, só será permito transfência de valores para contas bancárias vinculadas ao CPF/CNPJ do recebedor. </p>
                     </div>
                     <div class="tab-content hidden" data-step="1" data-tab="request">
                         <div class="code-block" id="request-1">POST https://api.pagar.me/core/v5/recipients
@@ -214,6 +214,7 @@
                 <div class="content-container">
                     <div class="tab-content" data-step="3" data-tab="explanation">
                         <p>Esta etapa é executada no front-end da sua aplicação (por exemplo, no navegador do cliente), usando sua <strong>chave pública (`public_key`)</strong> para garantir que os dados sensíveis do cartão não passem pelo seu servidor.</p>
+                        <p style="margin-top: 1em;">O card token gerado tem validade de um minuto e é limitado a um uso único.</p>
                     </div>
                     <div class="tab-content hidden" data-step="3" data-tab="request">
                         <div class="code-block" id="request-3">POST https://api.pagar.me/core/v5/tokens
@@ -394,6 +395,7 @@
     </script>
 </body>
 </html>
+
 
 
 
