@@ -74,7 +74,10 @@
                 </div>
                 <div class="content-container">
                     <div class="tab-content" data-step="1" data-tab="explanation">
-                        <p>O primeiro passo é cadastrar os recebedores (sellers) que participarão da divisão. A conta do marketplace já possui um recebedor principal. Uma observação importante: o documento do recebedor deverá ser igual ao documento da conta bancária, ou seja, só será permito transfência de valores para contas bancárias vinculadas ao CPF/CNPJO do recebedor. O recipient_id` retornado será usado na criação do pedido.</p>
+                        <p>O primeiro passo é cadastrar os recebedores (sellers) que participarão da divisão de valores. Sua conta Pagar.me já possui um recebedor principal que será usado para representar o marketplace na regra de Split. Você pode verificar esse recebedor na dashboard Pagar.me no menu Recebedores. O recipient_id` retornado será usado na criação do pedido.
+                           
+                           Uma observação importante: o documento do recebedor deverá ser igual ao documento da conta bancária, ou seja, só será permito transfência de valores para contas bancárias vinculadas ao CPF/CNPJO do recebedor.  
+                        </p>
                     </div>
                     <div class="tab-content hidden" data-step="1" data-tab="request">
                         <div class="code-block" id="request-1">POST https://api.pagar.me/core/v5/recipients
@@ -393,4 +396,5 @@
     </script>
 </body>
 </html>
+
 
