@@ -45,6 +45,10 @@
         .step-card {
             border: 1px solid #e5e7eb;
         }
+        .json-key { color: #9CDCFE; }
+        .json-string { color: #CE9178; }
+        .json-number { color: #B5CEA8; }
+        .json-boolean { color: #569CD6; }
     </style>
 </head>
 <body class="antialiased">
@@ -76,6 +80,7 @@
                     <div class="tab-content" data-step="1" data-tab="explanation">
                         <p>O primeiro passo é cadastrar os recebedores (sellers) que participarão da divisão de valores. Sua conta Pagar.me já possui um recebedor principal que será usado para representar o marketplace na regra de Split. Você pode verificar esse recebedor na dashboard Pagar.me no menu Recebedores. O recipient_id` retornado será usado na criação do pedido.</p>
                         <p style="margin-top: 1em;">Uma observação importante: o documento do recebedor deverá ser igual ao documento da conta bancária, ou seja, só será permito transfência de valores para contas bancárias vinculadas ao CPF/CNPJ do recebedor. </p>
+                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-recebedor-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-recebedor-1</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="1" data-tab="request">
                         <div class="code-block" id="request-1">POST https://api.pagar.me/core/v5/recipients
@@ -163,6 +168,7 @@
                 <div class="content-container">
                     <div class="tab-content" data-step="2" data-tab="explanation">
                         <p>O próximo passo é cadastrar o cliente que fará a compra. O `customer_id` retornado será usado nas próximas etapas.</p>
+                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-cliente-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-cliente-1</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="2" data-tab="request">
                         <div class="code-block" id="request-2">POST https://api.pagar.me/core/v5/customers
@@ -215,6 +221,7 @@
                     <div class="tab-content" data-step="3" data-tab="explanation">
                         <p>Esta etapa é executada no front-end da sua aplicação (por exemplo, no navegador do cliente), usando sua <strong>chave pública (`public_key`)</strong> para garantir que os dados sensíveis do cartão não passem pelo seu servidor.</p>
                         <p style="margin-top: 1em;">O card token gerado tem validade de um minuto e é limitado a um uso único.</p>
+                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-token-cart%C3%A3o-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-token-cartão-1</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="3" data-tab="request">
                         <div class="code-block" id="request-3">POST https://api.pagar.me/core/v5/tokens
@@ -254,6 +261,7 @@
                 <div class="content-container">
                     <div class="tab-content" data-step="4" data-tab="explanation">
                         <p>No seu back-end, use o `customer_id` (do Passo 2) e o `token` (do Passo 3) para salvar o cartão de forma segura no cofre da Pagar.me.</p>
+                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-cartao" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-cartao</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="4" data-tab="request">
                         <div class="code-block" id="request-4">POST https://api.pagar.me/core/v5/customers/<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>/cards
@@ -287,6 +295,7 @@
                 <div class="content-container">
                     <div class="tab-content" data-step="5" data-tab="explanation">
                         <p>Ao criar o pedido, inclua o objeto `split` para definir como o valor da transação será dividido entre os recebedores (o seu marketplace e o seller).</p>
+                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-pedido" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-pedido</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="5" data-tab="request">
                         <div class="code-block" id="request-5">POST https://api.pagar.me/core/v5/orders
@@ -356,6 +365,7 @@
                 <div class="content-container">
                     <div class="tab-content" data-step="6" data-tab="explanation">
                         <p>Por fim, se necessário, cancele a cobrança (estorno) usando o `charge_id` retornado no passo anterior. É possível realizar um estorno <strong>parcial</strong> (enviando o `amount`) ou <strong>total</strong> (omitindo o `amount`).</p>
+                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/cancelar-uma-cobran%C3%A7a" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/cancelar-uma-cobrança</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="6" data-tab="request">
                         <div class="code-block" id="request-6">DELETE https://api.pagar.me/core/v5/charges/<span class="highlight">ch_xxxxxxxxxxxxxxxx</span>
@@ -377,6 +387,28 @@
     </div>
 
     <script>
+        function beautifyJSON() {
+            document.querySelectorAll('.code-block').forEach(block => {
+                if (!block.textContent.includes('{') && !block.textContent.includes('}')) return;
+                
+                let html = block.innerHTML;
+
+                // Colore as chaves (ex: "name":)
+                html = html.replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2');
+
+                // Colore strings simples (que não contêm HTML)
+                html = html.replace(/:\s*"([^<"]*)"/g, ': <span class="json-string">"$1"</span>');
+
+                // Colore números
+                html = html.replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>');
+                
+                // Colore booleanos
+                html = html.replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>');
+
+                block.innerHTML = html;
+            });
+        }
+        
         document.addEventListener('DOMContentLoaded', () => {
             const allTabs = document.querySelectorAll('.tab');
             allTabs.forEach(tab => {
@@ -391,13 +423,9 @@
                     document.querySelector(`.tab-content[data-step="${step}"][data-tab="${tabName}"]`).classList.remove('hidden');
                 });
             });
+            beautifyJSON();
         });
     </script>
 </body>
 </html>
-
-
-
-
-
 
