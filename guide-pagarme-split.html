@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia Visual: Venda com Split de Pagamento - Pagar.me</title>
+    <title>Guia Visual: Venda Simples com Cartão - Pagar.me</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Calm Harmony Neutrals -->
-    <!-- Application Structure Plan: A single-page, vertical timeline/stepper structure. Each step of the API flow is a distinct card. This is ideal for presenting a linear, step-by-step process. Users can toggle between Explanation, Request, and Response for each step, making complex information digestible. -->
-    <!-- Visualization & Content Choices: Report Info: Step-by-step API guide for a split payment transaction -> Goal: Display the process flow and data dependencies for a marketplace scenario -> Viz/Presentation Method: Static cards with tabs. Code blocks for JSON payloads. -> Interaction: Tab-switching within each step. -> Justification: Breaks down a complex multi-party transaction into manageable, sequential steps, clarifying the role of each API call. -> Library/Method: Vanilla JS for tab functionality, Tailwind CSS for styling. -->
+    <!-- Application Structure Plan: A single-page, vertical timeline/stepper structure. Each step of the API flow (customer, token, card, order, cancel) is a distinct card. This structure is ideal for presenting a linear, step-by-step process clearly. -->
+    <!-- Visualization & Content Choices: Report Info: Step-by-step API guide for a simple card transaction -> Goal: Display the process flow and data dependencies -> Viz/Presentation Method: Static cards with tabs for "Explicação", "Requisição", and "Resposta". Code blocks for JSON payloads. -> Interaction: Tab-switching to navigate content within each step. -> Justification: Provides a clean, easy-to-read guide that demystifies a standard e-commerce transaction flow. -> Library/Method: Vanilla JS for tab functionality, Tailwind CSS for styling. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
@@ -49,6 +49,8 @@
         .json-string { color: #CE9178; }
         .json-number { color: #B5CEA8; }
         .json-boolean { color: #569CD6; }
+        .curl-command { color: #569CD6;}
+        .curl-header { color: #CE9178; }
     </style>
 </head>
 <body class="antialiased">
@@ -56,9 +58,9 @@
     <div class="container mx-auto p-4 md:p-8 max-w-4xl">
 
         <header class="text-center mb-12">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Guia de Integração: Venda com Split de Pagamento</h1>
-            <p class="mt-4 text-lg text-gray-600">Um guia simples do fluxo da API Pagar.me para uma transação com divisão de valores.</p>
-             <p class="mt-4 text-sm text-gray-500">Para detalhes completos sobre cada endpoint, consulte a <a href="https://docs.pagar.me/reference/" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline font-medium">documentação oficial da Pagar.me</a>.</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Guia de Integração: Venda Simples com Cartão</h1>
+            <p class="mt-4 text-lg text-gray-600">Um guia simples do fluxo da API Pagar.me para uma transação com cartão de crédito.</p>
+            <p class="mt-4 text-sm text-gray-500">Para detalhes completos sobre cada endpoint, consulte a <a href="https://docs.pagar.me/reference/" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline font-medium">documentação oficial da Pagar.me</a>.</p>
         </header>
 
         <div class="space-y-8">
@@ -67,7 +69,7 @@
             <div id="step-1" class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
                 <div class="flex items-center mb-4">
                     <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">1</div>
-                    <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Criação dos Recebedores</h2>
+                    <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Cadastro do Cliente</h2>
                 </div>
                 <div class="border-b border-gray-200 mb-4">
                     <nav class="flex flex-wrap space-x-2" data-step="1">
@@ -78,87 +80,55 @@
                 </div>
                 <div class="content-container">
                     <div class="tab-content" data-step="1" data-tab="explanation">
-                        <p>O primeiro passo é cadastrar os recebedores (sellers) que participarão da divisão de valores. Sua conta Pagar.me já possui um recebedor principal que será usado para representar o marketplace na regra de Split. Você pode verificar esse recebedor na dashboard Pagar.me no menu Recebedores. O recipient_id` retornado será usado na criação do pedido.</p>
-                        <p style="margin-top: 1em;">Uma observação importante: o documento do recebedor deverá ser igual ao documento da conta bancária, ou seja, só será permito transfência de valores para contas bancárias vinculadas ao CPF/CNPJ do recebedor. </p>
-                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-recebedor-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-recebedor-1</a></p>
+                        <p>O primeiro passo é cadastrar o cliente que fará a compra. O `customer_id` retornado será usado nas próximas etapas.</p>
+                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-cliente-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-cliente-1</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="1" data-tab="request">
-                        <div class="code-block" id="request-1">POST https://api.pagar.me/core/v5/recipients
+                        <div class="code-block" id="request-1"><span class="curl-command">curl</span> --request POST \
+--url https://api.pagar.me/core/v5/customers \
+--header <span class="curl-header">'Authorization: Basic c2tfdGVzdF9zaW1wbGVleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
 {
-    "name": "Stark Industries",
-    "email": "contato@starkindustries.com",
-    "description": "Recebedor de Exemplo - Seller",
-    "document": "18721647000199",
-    "type": "company",
-    "default_bank_account": {
-        "holder_name": "Stark Industries",
-        "holder_type": "company",
-        "holder_document": "18721647000199",
-        "bank": "341",
-        "branch_number": "1234",
-        "branch_check_digit": "5",
-        "account_number": "12345",
-        "account_check_digit": "6",
-        "type": "checking"
-    },
-    "transfer_settings": {
-        "transfer_enabled": true,
-        "transfer_interval": "daily",
-        "transfer_day": 1
-    },
-    "register_information": {
-        "type": "corporation",
-        "company_name": "Stark Industries LTDA",
-        "trading_name": "Stark Industries",
-        "annual_revenue": "100000000000",
-        "corporation_type": "LTDA",
-        "founding_date": "1970-05-15",
-        "managing_partners": [
-            {
-                "type": "individual",
-                "name": "Tony Stark",
-                "email": "tony.stark@starkindustries.com",
-                "document": "87232965001",
-                "birthdate": "1970-05-29",
-                "monthly_income": "999999999",
-                "professional_occupation": "Inventor e Empresário",
-                "self_declared_legal_representative": true,
-                "address": {
-                    "line_1": "10880, Malibu Point",
-                    "zip_code": "90265",
-                    "city": "Malibu",
-                    "state": "CA",
-                    "country": "US"
-                },
-                "phones": {
-                    "mobile_phone": {
-                        "country_code": "1",
-                        "area_code": "310",
-                        "number": "45710880"
-                    }
-                }
-            }
-        ]
+  "name": "Tony Stark",
+  "email": "avengerstark@starkindustries.com.br",
+  "document": "87232965001",
+  "type": "individual",
+  "address": {
+    "line_1": "375, Av. General Justo, Centro",
+    "line_2": "8º andar",
+    "zip_code": "20021130",
+    "city": "Rio de Janeiro",
+    "state": "RJ",
+    "country": "BR"
+  },
+  "phones": {
+    "home_phone": {
+      "country_code": "55",
+      "number": "22180513",
+      "area_code": "21"
     }
-}</div>
+  }
+}
+'</div>
                     </div>
                     <div class="tab-content hidden" data-step="1" data-tab="response">
                         <div class="code-block" id="response-1">{
-  "id": "<span class="highlight">re_xxxxxxxxxxxxxxxx</span>",
-  "name": "Stark Industries",
+  "id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
+  "name": "Tony Stark",
   "status": "active"
 }</div>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Step 2 -->
             <div id="step-2" class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
-                <div class="flex items-center mb-4">
+                 <div class="flex items-center mb-4">
                     <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">2</div>
-                    <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Cadastro do Cliente</h2>
+                    <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Criação do Token do Cartão</h2>
                 </div>
-                <div class="border-b border-gray-200 mb-4">
+                 <div class="border-b border-gray-200 mb-4">
                     <nav class="flex flex-wrap space-x-2" data-step="2">
                         <button class="tab tab-active py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="explanation">Explicação</button>
                         <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="request">Requisição</button>
@@ -167,38 +137,32 @@
                 </div>
                 <div class="content-container">
                     <div class="tab-content" data-step="2" data-tab="explanation">
-                        <p>O próximo passo é cadastrar o cliente que fará a compra. O `customer_id` retornado será usado nas próximas etapas.</p>
-                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-cliente-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-cliente-1</a></p>
+                        <p>Esta etapa é executada no front-end da sua aplicação (por exemplo, no navegador do cliente), usando sua <strong>chave pública (`public_key`)</strong> para garantir que os dados sensíveis do cartão não passem pelo seu servidor.</p>
+                        <p style="margin-top: 1em;">O card token gerado tem validade de um minuto e é limitado a um uso único.</p>
+                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-token-cart%C3%A3o-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-token-cartão-1</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="2" data-tab="request">
-                        <div class="code-block" id="request-2">POST https://api.pagar.me/core/v5/customers
+                        <div class="code-block" id="request-2"><span class="curl-command">curl</span> --request POST \
+--url https://api.pagar.me/core/v5/tokens \
+--header <span class="curl-header">'Authorization: Basic cGtfdGVzdF9zaW1wbGVleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
 {
-  "name": "Steve Rogers",
-  "email": "captain@avengers.com",
-  "document": "27256221034",
-  "type": "individual",
-  "address": {
-    "line_1": "569, Lefferts Place, Brooklyn",
-    "line_2": "Apt 4",
-    "zip_code": "11238",
-    "city": "New York",
-    "state": "NY",
-    "country": "US"
-  },
-  "phones": {
-    "home_phone": {
-      "country_code": "1",
-      "number": "5551234",
-      "area_code": "718"
-    }
+  "type": "card",
+  "card": {
+    "number": "4242424242424242",
+    "holder_name": "Tony Stark",
+    "exp_month": 12,
+    "exp_year": 2030,
+    "cvv": "123"
   }
-}</div>
+}
+'</div>
                     </div>
                     <div class="tab-content hidden" data-step="2" data-tab="response">
                         <div class="code-block" id="response-2">{
-  "id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
-  "name": "Steve Rogers",
-  "status": "active"
+  "id": "<span class="highlight">token_xxxxxxxxxxxxxxxx</span>",
+  "type": "card"
 }</div>
                     </div>
                 </div>
@@ -208,7 +172,7 @@
             <div id="step-3" class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
                  <div class="flex items-center mb-4">
                     <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">3</div>
-                    <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Criação do Token do Cartão</h2>
+                    <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Criação do Cartão a partir do Token</h2>
                 </div>
                  <div class="border-b border-gray-200 mb-4">
                     <nav class="flex flex-wrap space-x-2" data-step="3">
@@ -219,37 +183,35 @@
                 </div>
                 <div class="content-container">
                     <div class="tab-content" data-step="3" data-tab="explanation">
-                        <p>Esta etapa é executada no front-end da sua aplicação (por exemplo, no navegador do cliente), usando sua <strong>chave pública (`public_key`)</strong> para garantir que os dados sensíveis do cartão não passem pelo seu servidor.</p>
-                        <p style="margin-top: 1em;">O card token gerado tem validade de um minuto e é limitado a um uso único.</p>
-                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-token-cart%C3%A3o-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-token-cartão-1</a></p>
+                        <p>No seu back-end, use o `customer_id` (do Passo 1) e o `token` (do Passo 2) para salvar o cartão de forma segura no cofre da Pagar.me.</p>
+                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-cartao" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-cartao</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="3" data-tab="request">
-                        <div class="code-block" id="request-3">POST https://api.pagar.me/core/v5/tokens
+                        <div class="code-block" id="request-3"><span class="curl-command">curl</span> --request POST \
+--url https://api.pagar.me/core/v5/customers/<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>/cards \
+--header <span class="curl-header">'Authorization: Basic c2tfdGVzdF9zaW1wbGVleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
 {
-  "type": "card",
-  "card": {
-    "number": "4242424242424242",
-    "holder_name": "Steve Rogers",
-    "exp_month": 12,
-    "exp_year": 2030,
-    "cvv": "123"
-  }
-}</div>
+  "token": "<span class="highlight">token_xxxxxxxxxxxxxxxx</span>"
+}
+'</div>
                     </div>
                     <div class="tab-content hidden" data-step="3" data-tab="response">
                         <div class="code-block" id="response-3">{
-  "id": "<span class="highlight">token_xxxxxxxxxxxxxxxx</span>",
-  "type": "card"
+  "id": "<span class="highlight">card_xxxxxxxxxxxxxxxx</span>",
+  "last_four_digits": "4242",
+  "status": "active"
 }</div>
                     </div>
                 </div>
             </div>
-
+            
             <!-- Step 4 -->
             <div id="step-4" class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
                  <div class="flex items-center mb-4">
                     <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">4</div>
-                    <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Criação do Cartão a partir do Token</h2>
+                    <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Criação do Pedido</h2>
                 </div>
                  <div class="border-b border-gray-200 mb-4">
                     <nav class="flex flex-wrap space-x-2" data-step="4">
@@ -260,30 +222,59 @@
                 </div>
                 <div class="content-container">
                     <div class="tab-content" data-step="4" data-tab="explanation">
-                        <p>No seu back-end, use o `customer_id` (do Passo 2) e o `token` (do Passo 3) para salvar o cartão de forma segura no cofre da Pagar.me.</p>
-                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-cartao" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-cartao</a></p>
+                        <p>Finalmente, crie o pedido usando o `customer_id` e o `card_id` salvos. A opção `"capture": true` faz com que a cobrança seja efetuada imediatamente.</p>
+                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-pedido" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-pedido</a></p>
                     </div>
                     <div class="tab-content hidden" data-step="4" data-tab="request">
-                        <div class="code-block" id="request-4">POST https://api.pagar.me/core/v5/customers/<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>/cards
+                        <div class="code-block" id="request-4"><span class="curl-command">curl</span> --request POST \
+--url https://api.pagar.me/core/v5/orders \
+--header <span class="curl-header">'Authorization: Basic c2tfdGVzdF9zaW1wbGVleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
 {
-  "token": "<span class="highlight">token_xxxxxxxxxxxxxxxx</span>"
-}</div>
+  "customer_id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
+  "items": [
+    {
+      "amount": 15000,
+      "description": "Item de Teste",
+      "quantity": 1,
+      "code": "ITEM001"
+    }
+  ],
+  "payments": [
+    {
+      "payment_method": "credit_card",
+      "credit_card": {
+        "installments": 1,
+        "capture": true,
+        "card_id": "<span class="highlight">card_xxxxxxxxxxxxxxxx</span>"
+      }
+    }
+  ]
+}
+'</div>
                     </div>
                     <div class="tab-content hidden" data-step="4" data-tab="response">
                         <div class="code-block" id="response-4">{
-  "id": "<span class="highlight">card_xxxxxxxxxxxxxxxx</span>",
-  "last_four_digits": "4242",
-  "status": "active"
+  "id": "or_xxxxxxxxxxxxxxxx",
+  "status": "paid",
+  "charges": [
+    {
+      "id": "<span class="highlight">ch_xxxxxxxxxxxxxxxx</span>",
+      "amount": 15000,
+      "status": "paid"
+    }
+  ]
 }</div>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Step 5 -->
             <div id="step-5" class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
                  <div class="flex items-center mb-4">
                     <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">5</div>
-                    <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Criação de um Pedido com Split</h2>
+                    <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Cancelamento da Cobrança</h2>
                 </div>
                  <div class="border-b border-gray-200 mb-4">
                     <nav class="flex flex-wrap space-x-2" data-step="5">
@@ -294,89 +285,24 @@
                 </div>
                 <div class="content-container">
                     <div class="tab-content" data-step="5" data-tab="explanation">
-                        <p>Ao criar o pedido, inclua o objeto `split` para definir como o valor da transação será dividido entre os recebedores (o seu marketplace e o seller).</p>
-                        <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-pedido" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-pedido</a></p>
-                    </div>
-                    <div class="tab-content hidden" data-step="5" data-tab="request">
-                        <div class="code-block" id="request-5">POST https://api.pagar.me/core/v5/orders
-{
-  "customer_id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
-  "items": [
-    {
-      "amount": 20000,
-      "description": "Item com Split",
-      "quantity": 1,
-      "code": "ITEM-SPLIT-01"
-    }
-  ],
-  "payments": [
-    {
-      "payment_method": "credit_card",
-      "credit_card": {
-        "installments": 1,
-        "capture": true,
-        "card_id": "<span class="highlight">card_xxxxxxxxxxxxxxxx</span>"
-      },
-      "split": [
-          {
-              "amount": 18000,
-              "recipient_id": "<span class="highlight">re_xxxxxxxxxxxxxxxx</span>",
-              "type": "flat",
-              "options": {
-                  "charge_processing_fee": true,
-                  "charge_remainder_fee": true,
-                  "liable": true
-              }
-          }
-      ]
-    }
-  ]
-}</div>
-                    </div>
-                    <div class="tab-content hidden" data-step="5" data-tab="response">
-                        <div class="code-block" id="response-5">{
-  "id": "or_xxxxxxxxxxxxxxxx",
-  "status": "paid",
-  "charges": [
-    {
-      "id": "<span class="highlight">ch_xxxxxxxxxxxxxxxx</span>",
-      "amount": 20000,
-      "status": "paid"
-    }
-  ]
-}</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 6 -->
-            <div id="step-6" class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
-                 <div class="flex items-center mb-4">
-                    <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">6</div>
-                    <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Cancelamento da Cobrança</h2>
-                </div>
-                 <div class="border-b border-gray-200 mb-4">
-                    <nav class="flex flex-wrap space-x-2" data-step="6">
-                        <button class="tab tab-active py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="explanation">Explicação</button>
-                        <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="request">Requisição</button>
-                        <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="response">Resposta</button>
-                    </nav>
-                </div>
-                <div class="content-container">
-                    <div class="tab-content" data-step="6" data-tab="explanation">
                         <p>Por fim, se necessário, cancele a cobrança (estorno) usando o `charge_id` retornado no passo anterior. É possível realizar um estorno <strong>parcial</strong> (enviando o `amount`) ou <strong>total</strong> (omitindo o `amount`).</p>
                         <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/cancelar-uma-cobran%C3%A7a" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/cancelar-uma-cobrança</a></p>
                     </div>
-                    <div class="tab-content hidden" data-step="6" data-tab="request">
-                        <div class="code-block" id="request-6">DELETE https://api.pagar.me/core/v5/charges/<span class="highlight">ch_xxxxxxxxxxxxxxxx</span>
+                    <div class="tab-content hidden" data-step="5" data-tab="request">
+                        <div class="code-block" id="request-5"><span class="curl-command">curl</span> --request DELETE \
+--url https://api.pagar.me/core/v5/charges/<span class="highlight">ch_xxxxxxxxxxxxxxxx</span> \
+--header <span class="curl-header">'Authorization: Basic c2tfdGVzdF9zaW1wbGVleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
 {
-  "amount": 20000
-}</div>
+  "amount": 15000
+}
+'</div>
                     </div>
-                    <div class="tab-content hidden" data-step="6" data-tab="response">
-                        <div class="code-block" id="response-6">{
+                    <div class="tab-content hidden" data-step="5" data-tab="response">
+                        <div class="code-block" id="response-5">{
   "id": "<span class="highlight">ch_xxxxxxxxxxxxxxxx</span>",
-  "amount": 20000,
+  "amount": 15000,
   "status": "canceled"
 }</div>
                     </div>
@@ -389,26 +315,36 @@
     <script>
         function beautifyJSON() {
             document.querySelectorAll('.code-block').forEach(block => {
-                if (!block.textContent.includes('{') && !block.textContent.includes('}')) return;
+                let textContent = block.innerText || block.textContent;
                 
-                let html = block.innerHTML;
+                let jsonText;
+                const jsonMatch = textContent.match(/{[\s\S]*}/);
+                if (jsonMatch) {
+                    jsonText = jsonMatch[0];
+                } else {
+                    jsonText = textContent;
+                }
 
-                // Colore as chaves (ex: "name":)
-                html = html.replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2');
-
-                // Colore strings simples (que não contêm HTML)
-                html = html.replace(/:\s*"([^<"]*)"/g, ': <span class="json-string">"$1"</span>');
-
-                // Colore números
-                html = html.replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>');
+                if (!jsonText.includes('{') && !jsonText.includes('}')) return;
                 
-                // Colore booleanos
-                html = html.replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>');
+                try {
+                    // This is just to validate, we use regex for coloring
+                    JSON.parse(jsonText);
 
-                block.innerHTML = html;
+                    let coloredJson = jsonText
+                        .replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2')
+                        .replace(/:\s*"([^<"]*)"/g, ': <span class="json-string">"$1"</span>')
+                        .replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>')
+                        .replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>');
+
+                    block.innerHTML = block.innerHTML.replace(jsonText, coloredJson);
+
+                } catch (e) {
+                    // Not valid JSON, do nothing
+                }
             });
         }
-        
+
         document.addEventListener('DOMContentLoaded', () => {
             const allTabs = document.querySelectorAll('.tab');
             allTabs.forEach(tab => {
