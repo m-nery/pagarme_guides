@@ -2,52 +2,105 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Pagar.me Guides</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Pagar.me Guides</title>
     <style>
         body { 
             font-family: sans-serif; 
             text-align: center; 
             padding-top: 50px; 
-            /* Adiciona espaço na parte inferior para o rodapé respirar */
-            padding-bottom: 100px; 
+            padding-bottom: 100px; /* Espaço para o rodapé */
+            margin: 0; /* Remove margens padrão do body */
+            background-color: #f8f8f8; /* Um fundo suave */
         }
         h1 { 
             color: #333; 
+            margin-bottom: 30px;
+        }
+        p {
+            color: #555;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .buttons-container { /* Novo container para os botões */
+            display: flex; /* Permite que os botões fiquem lado a lado */
+            flex-wrap: wrap; /* Quebra para a linha de baixo em telas pequenas */
+            justify-content: center; /* Centraliza os botões */
+            gap: 20px; /* Espaço entre os botões */
+            margin-bottom: 50px;
         }
         a { 
-            display: inline-block; 
-            margin: 10px; 
-            padding: 15px 25px; 
-            background-color: #00b055; 
+            display: block; /* Botões sempre em bloco para ocupar a largura disponível no mobile */
+            min-width: 250px; /* Largura mínima para os botões */
+            max-width: 300px; /* Largura máxima para os botões */
+            padding: 18px 30px; /* Espaçamento interno maior */
+            background-color: #00b055; /* NOVA COR DOS BOTÕES */
             color: white; 
             text-decoration: none; 
-            border-radius: 5px; 
+            border-radius: 8px; /* Cantos mais arredondados */
+            font-size: 1.2em; /* Texto um pouco maior */
+            font-weight: bold;
+            transition: background-color 0.3s ease; /* Transição suave na cor */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil */
         }
         a:hover { 
-            background-color: #00813e; 
+            background-color: #008f44; /* Cor mais escura ao passar o mouse */
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15); /* Sombra mais pronunciada */
         }
 
-        /* --- ESTILO PARA O RODAPÉ (NOVO) --- */
         footer {
-            position: fixed; /* Fixa o rodapé na parte inferior da janela */
+            position: fixed; 
             left: 0;
             bottom: 0;
             width: 100%;
-            background-color: #f2f2f2; /* Um fundo cinza claro */
-            color: #555; /* Cor do texto mais escura */
+            background-color: #f2f2f2; 
+            color: #555; 
             text-align: center;
-            padding: 15px 0; /* Espaçamento interno */
-            font-size: 14px; /* Tamanho da fonte */
-            border-top: 1px solid #ddd; /* Linha sutil na parte superior */
+            padding: 15px 0; 
+            font-size: 0.9em; /* Ajuste para mobile */
+            border-top: 1px solid #ddd; 
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05); /* Sombra para o rodapé */
+        }
+
+        /* --- MEDIA QUERIES PARA RESPONSIVIDADE --- */
+        @media (max-width: 600px) { /* Para telas com largura máxima de 600px (smartphones) */
+            body {
+                padding-top: 30px;
+                padding-bottom: 80px;
+            }
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            p {
+                font-size: 1em;
+                margin-bottom: 30px;
+                padding: 0 15px; /* Adiciona um padding nas laterais em mobile */
+            }
+            a {
+                min-width: unset; /* Remove a largura mínima para ocupar mais espaço */
+                width: calc(100% - 40px); /* Ocupa quase 100% com padding */
+                margin: 0 auto 15px auto; /* Centraliza e adiciona margem inferior */
+                padding: 15px 20px;
+                font-size: 1.1em;
+            }
+            .buttons-container {
+                flex-direction: column; /* Força os botões a ficarem um embaixo do outro */
+                gap: 15px; /* Espaço menor entre os botões no mobile */
+            }
+            footer {
+                padding: 12px 0;
+                font-size: 0.85em;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Guias de Integração - API Pagar.me V5</h1>
+    <h1>Guias de Venda - Pagar.me</h1>
     <p>Escolha qual guia você deseja acessar:</p>
     
-    <a href="guide-pagarme-split.html">Guia de Integração com Split</a>
-    <a href="venda-simples-pagarme.html">Guia de Integração sem Split</a>
+    <div class="buttons-container"> <a href="guide-pagarme-split.html">Guia de Venda com Split</a>
+        <a href="venda-simples-pagarme.html">Guia de Venda sem Slit</a>
+    </div>
 
     <footer>
         Este não é um guia oficial Pagar.me.
@@ -55,5 +108,3 @@
 
 </body>
 </html>
-
-
