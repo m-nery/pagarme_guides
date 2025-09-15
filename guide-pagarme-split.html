@@ -165,13 +165,13 @@
     "transfer_interval": "Daily",
     "transfer_day": 0
   },
-  "automatic_anticipation_settings": { //exemplo de configuração de antecipação D+30
+  "automatic_anticipation_settings": {
     "enabled": "true",
     "type": "1025",
     "volume_percentage": "100",
     "delay": "29"
   },
-  "code": "industrias stark" //deve ser único por recebedor
+  "code": "industrias stark"
 }
 '</div>
                     </div>
@@ -360,7 +360,7 @@
 --header <span class="curl-header">'Content-Type: application/json'</span> \
 --data '
 {
-  "customer_id": "cus_xxxxxxxxxxxxxxxx",
+  "customer_id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
   "items": [
     {
       "amount": 20000,
@@ -375,12 +375,12 @@
       "credit_card": {
         "installments": 1,
         "capture": true,
-        "card_id": "card_MrG1rwXh9hbjmBAn"
+        "card_id": "<span class="highlight">card_MrG1rwXh9hbjmBAn</span>"
       },
       "split": [
           {
               "amount": 18000,
-              "recipient_id": "re_xxxxxxxxxxxxxxxx1",
+              "recipient_id": "<span class="highlight">re_xxxxxxxxxxxxxxxx1</span>",
               "type": "flat",
               "options": {
                   "charge_processing_fee": true,
@@ -390,7 +390,7 @@
           },
           {
               "amount": 2000,
-              "recipient_id": "re_xxxxxxxxxxxxxxxx2",
+              "recipient_id": "<span class="highlight">re_xxxxxxxxxxxxxxxx2</span>",
               "type": "flat",
               "options": {
                   "charge_processing_fee": false,
@@ -465,33 +465,24 @@
     <script>
         function beautifyJSON() {
             document.querySelectorAll('.code-block').forEach(block => {
-                let textContent = block.innerText || block.textContent;
+                let html = block.innerHTML;
+
+                const jsonMatch = html.match(/{[\s\S]*}/);
+                if (!jsonMatch) return;
+
+                let jsonHtml = jsonMatch[0];
+
+                let coloredJson = jsonHtml.replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2');
                 
-                let jsonText;
-                const jsonMatch = textContent.match(/{[\s\S]*}/);
-                if (jsonMatch) {
-                    jsonText = jsonMatch[0];
-                } else {
-                    jsonText = textContent;
-                }
-
-                if (!jsonText.includes('{') && !jsonText.includes('}')) return;
+                coloredJson = coloredJson.replace(/:(\s*)"((?:<span class="highlight">.*?<\/span>|[^"])*)"/g, ':$1<span class="json-string">"$2"</span>');
                 
-                try {
-                    // This is just to validate, we use regex for coloring
-                    JSON.parse(jsonText);
+                coloredJson = coloredJson.replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>');
+                
+                coloredJson = coloredJson.replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>');
+                
+                coloredJson = coloredJson.replace(/:\s*"(\d{4}-\d{2}-\d{2})"/g, ': <span class="json-string">"$1"</span>');
 
-                    let coloredJson = jsonText
-                        .replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2')
-                        .replace(/:\s*"([^<"]*)"/g, ': <span class="json-string">"$1"</span>')
-                        .replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>')
-                        .replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>');
-
-                    block.innerHTML = block.innerHTML.replace(jsonText, coloredJson);
-
-                } catch (e) {
-                    // Not valid JSON, do nothing
-                }
+                block.innerHTML = html.replace(jsonHtml, coloredJson);
             });
         }
         
