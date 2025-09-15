@@ -91,61 +91,87 @@
 --header <span class="curl-header">'Content-Type: application/json'</span> \
 --data '
 {
-    "name": "Stark Industries",
-    "email": "contato@starkindustries.com",
-    "description": "Recebedor de Exemplo - Seller",
-    "document": "18721647000199",
-    "type": "company",
-    "default_bank_account": {
-        "holder_name": "Stark Industries",
-        "holder_type": "company",
-        "holder_document": "18721647000199",
-        "bank": "341",
-        "branch_number": "1234",
-        "branch_check_digit": "5",
-        "account_number": "12345",
-        "account_check_digit": "6",
-        "type": "checking"
+  "register_information": {
+    "phone_numbers": [
+      {
+        "ddd": "21",
+        "number": "994647568",
+        "type": "mobile"
+      }
+    ],
+    "main_address": {
+      "street": "Av. General Justo",
+      "complementary": "Bloco A",
+      "street_number": "375",
+      "neighborhood": "Centro",
+      "city": "Rio de Janeiro",
+      "state": "RJ",
+      "zip_code": "20021130",
+      "reference_point": "Ao lado da banca de jornal"
     },
-    "transfer_settings": {
-        "transfer_enabled": true,
-        "transfer_interval": "daily",
-        "transfer_day": 1
-    },
-    "register_information": {
-        "type": "corporation",
-        "company_name": "Stark Industries LTDA",
-        "trading_name": "Stark Industries",
-        "annual_revenue": "100000000000",
-        "corporation_type": "LTDA",
-        "founding_date": "1970-05-15",
-        "managing_partners": [
-            {
-                "type": "individual",
-                "name": "Tony Stark",
-                "email": "tony.stark@starkindustries.com",
-                "document": "87232965001",
-                "birthdate": "1970-05-29",
-                "monthly_income": "999999999",
-                "professional_occupation": "Inventor e Empresário",
-                "self_declared_legal_representative": true,
-                "address": {
-                    "line_1": "10880, Malibu Point",
-                    "zip_code": "90265",
-                    "city": "Malibu",
-                    "state": "CA",
-                    "country": "US"
-                },
-                "phones": {
-                    "mobile_phone": {
-                        "country_code": "1",
-                        "area_code": "310",
-                        "number": "45710880"
-                    }
-                }
-            }
+    "company_name": "Recebedor pessoa juridica",
+    "trading_name": "Empresa LTDA",
+    "email": "empresax@avengers.com",
+    "document": "77699131000133",
+    "type": "corporation",
+    "site_url": "http://www.site.com",
+    "annual_revenue": 1000000,
+    "corporation_type": "LTDA",
+    "founding_date": "2010-10-30",
+    "managing_partners": [
+      {
+        "name": "Tony Stark",
+        "email": "tstark@avengers.com",
+        "document": "26224451990",
+        "type": "individual",
+        "mother_name": "Nome da mae",
+        "birthdate": "12/10/1995",
+        "monthly_income": 120000,
+        "professional_occupation": "Vendedor",
+        "self_declared_legal_representative": true,
+        "address": {
+          "street": "Av. General Justo",
+          "complementary": "Bloco A",
+          "street_number": "375",
+          "neighborhood": "Centro",
+          "city": "Rio de Janeiro",
+          "state": "RJ",
+          "zip_code": "20021130",
+          "reference_point": "Ao lado da banca de jornal"
+        },
+        "phone_numbers": [
+          {
+            "ddd": "27",
+            "number": "999992628",
+            "type": "mobile"
+          }
         ]
-    }
+      }
+    ]
+  },
+  "default_bank_account": {
+    "holder_name": "Tony Stark",
+    "holder_type": "company",
+    "holder_document": "77699131000133",
+    "bank": "341",
+    "branch_number": "1234",
+    "branch_check_digit": "6",
+    "account_number": "12345",
+    "account_check_digit": "6",
+    "type": "checking"
+  },
+  "transfer_settings": {
+    "transfer_enabled": "false",
+    "transfer_interval": "Daily",
+    "transfer_day": 0
+  },
+  "automatic_anticipation_settings": { //exemplo de configuração de antecipação D+30
+    "enabled": "true",
+    "type": "1025",
+    "volume_percentage": "100",
+    "delay": "29"
+  },
+  "code": "industrias stark" //deve ser único por recebedor
 }
 '</div>
                     </div>
@@ -287,7 +313,15 @@
 --header <span class="curl-header">'Content-Type: application/json'</span> \
 --data '
 {
-  "token": "<span class="highlight">token_xxxxxxxxxxxxxxxx</span>"
+  "token": "<span class="highlight">token_xxxxxxxxxxxxxxxx</span>",
+  "billing_address": {
+    "line_1": "375, Av. General Osorio, Centro",
+    "line_2": "7º Andar",
+    "zip_code": "220000111",
+    "city": "Rio de Janeiro",
+    "state": "RJ",
+    "country": "BR"
+  }
 }
 '</div>
                     </div>
@@ -326,7 +360,7 @@
 --header <span class="curl-header">'Content-Type: application/json'</span> \
 --data '
 {
-  "customer_id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
+  "customer_id": "cus_xxxxxxxxxxxxxxxx",
   "items": [
     {
       "amount": 20000,
@@ -341,17 +375,27 @@
       "credit_card": {
         "installments": 1,
         "capture": true,
-        "card_id": "<span class="highlight">card_xxxxxxxxxxxxxxxx</span>"
+        "card_id": "card_MrG1rwXh9hbjmBAn"
       },
       "split": [
           {
               "amount": 18000,
-              "recipient_id": "<span class="highlight">re_xxxxxxxxxxxxxxxx</span>",
+              "recipient_id": "re_xxxxxxxxxxxxxxxx1",
               "type": "flat",
               "options": {
                   "charge_processing_fee": true,
                   "charge_remainder_fee": true,
                   "liable": true
+              }
+          },
+          {
+              "amount": 2000,
+              "recipient_id": "re_xxxxxxxxxxxxxxxx2",
+              "type": "flat",
+              "options": {
+                  "charge_processing_fee": false,
+                  "charge_remainder_fee": false,
+                  "liable": false
               }
           }
       ]
