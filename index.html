@@ -109,8 +109,8 @@
             <hr style="margin: 40px auto; border: 1px solid #e9ecef; width: 80%;">
             <p>Excelente! Agora, escolha o guia desejado:</p>
             <div class="guides-container">
-                <a href="guide-pagarme-split.html" class="button">Guia de Venda com Split</a>
-                <a href="venda-simples-pagarme.html" class="button">Guia de Venda Simples</a>
+                <a href="guide-pagarme-split.html" class="button">Fluxo de Venda com Split</a>
+                <a href="venda-simples-pagarme.html" class="button">Fluxo de Venda sem Split</a>
             </div>
         </div>
 
@@ -121,16 +121,27 @@
     </footer>
 
     <script>
-        const pspButton = document.getElementById('pspButton');
-        const step1 = document.getElementById('step-1');
-        const step2 = document.getElementById('step-2');
+        document.addEventListener('DOMContentLoaded', function() {
+            const pspButton = document.getElementById('pspButton');
+            const step2 = document.getElementById('step-2');
 
-        pspButton.addEventListener('click', function() {
-            // Apenas mostra a etapa 2, sem esconder a etapa 1
-            step2.classList.remove('hidden'); 
-            
-            // Desativa o botão para que não possa ser clicado novamente
-            pspButton.disabled = true;
+            // Função para ativar o estado "pressionado"
+            function activateStep2() {
+                step2.classList.remove('hidden');
+                pspButton.disabled = true;
+            }
+
+            // Ao carregar a página, verifica se o estado já existe no sessionStorage
+            if (sessionStorage.getItem('pspButtonClicked') === 'true') {
+                activateStep2();
+            }
+
+            // Adiciona o evento de clique ao botão
+            pspButton.addEventListener('click', function() {
+                activateStep2();
+                // Salva o estado no sessionStorage para lembrar na próxima visita
+                sessionStorage.setItem('pspButtonClicked', 'true');
+            });
         });
     </script>
 
