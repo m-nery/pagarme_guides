@@ -9,14 +9,10 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             margin: 0;
             height: 100%;
-            overflow: hidden; /* Impede o scroll no corpo principal */
+            overflow: hidden;
             background-color: #f8f9fa;
         }
-        #app-wrapper {
-            display: flex;
-            height: 100%;
-            width: 100%;
-        }
+        #app-wrapper { display: flex; height: 100%; width: 100%; }
         #navigation-panel {
             width: 100%;
             flex-shrink: 0;
@@ -27,115 +23,48 @@
             transition: width 0.6s cubic-bezier(0.77, 0, 0.175, 1);
             overflow-y: auto;
             text-align: center;
+            border-right: 1px solid #e5e7eb;
+            background-color: #ffffff;
         }
         #content-panel {
             flex-grow: 1;
             height: 100%;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out 0.2s; /* Atraso para aparecer depois da animação */
+            overflow-y: auto;
+            transition: opacity 0.5s ease-in-out 0.2s;
+            display: none; /* Inicia oculto */
         }
-        #guide-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        /* Estado Ativo: Quando um guia é selecionado */
         #app-wrapper.view-active #navigation-panel {
-            width: 420px; /* Largura da barra lateral */
+            width: 420px;
             align-items: flex-start;
             padding-top: 60px;
-            text-align: left;
         }
-        #app-wrapper.view-active #content-panel {
-            opacity: 1;
+        #app-wrapper.view-active #content-panel { opacity: 1; display: block; }
+        #app-wrapper.view-active .container { text-align: left; }
+        #app-wrapper.view-active .guides-container { flex-direction: column; align-items: stretch; }
+        #app-wrapper.view-active .button { text-align: left; padding-left: 25px; }
+        .container { max-width: 800px; width: 100%; }
+        h1 { color: #343a40; margin-bottom: 20px; }
+        p { color: #6c757d; margin-bottom: 30px; font-size: 1.1em; line-height: 1.5; }
+        .button {
+            display: inline-block; width: 100%; max-width: 320px; padding: 18px 30px;
+            background-color: #00b055; color: white; text-decoration: none; border: none;
+            border-radius: 8px; font-size: 1.2em; font-weight: bold; cursor: pointer;
+            transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(0,0,0,0.1); box-sizing: border-box;
         }
-        #app-wrapper.view-active .container {
-            text-align: left;
-        }
-        #app-wrapper.view-active .guides-container {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        #app-wrapper.view-active .button {
-            text-align: left;
-            padding-left: 25px;
-        }
-        .container {
-            max-width: 800px;
-            width: 100%;
-        }
-        h1 { 
-            color: #343a40; 
-            margin-bottom: 20px;
-        }
-        p {
-            color: #6c757d;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-            line-height: 1.5;
-        }
-        .button { 
-            display: inline-block;
-            width: 100%;
-            max-width: 320px;
-            padding: 18px 30px; 
-            background-color: #00b055; 
-            color: white; 
-            text-decoration: none; 
-            border: none;
-            border-radius: 8px; 
-            font-size: 1.2em; 
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-            box-sizing: border-box;
-        }
-        .button:hover { 
-            background-color: #008f44; 
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            transform: translateY(-2px);
-        }
-        .button:disabled {
-            background-color: #cccccc;
-            color: #666666;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .button:disabled:hover {
-            background-color: #cccccc;
-        }
-        .guides-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-        .hidden {
-            display: none !important;
-        }
+        .button:hover { background-color: #008f44; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transform: translateY(-2px); }
+        .button:disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; transform: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .button:disabled:hover { background-color: #cccccc; }
+        .guides-container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .hidden { display: none !important; }
         footer {
-            position: fixed; 
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            background-color: #f2f2f2; 
-            color: #555; 
-            text-align: center;
-            padding: 15px 0; 
-            font-size: 0.9em;
-            border-top: 1px solid #ddd; 
+            position: fixed; left: 0; bottom: 0; width: 100%;
+            background-color: #f2f2f2; color: #555; text-align: center;
+            padding: 15px 0; font-size: 0.9em; border-top: 1px solid #ddd;
         }
         @media (min-width: 768px) {
-            .guides-container {
-                flex-direction: row;
-                justify-content: center;
-            }
-             #app-wrapper.view-active .guides-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
+            .guides-container { flex-direction: row; justify-content: center; }
+            #app-wrapper.view-active .guides-container { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
@@ -150,7 +79,7 @@
                     <button id="pspButton" class="button">PSP</button>
                 </div>
                 <div id="step-2" class="hidden">
-                    <hr style="margin: 40px auto; border: 1px solid #e9ecef; width: 80%;">
+                    <hr style="margin: 40px 0; border: 1px solid #e9ecef;">
                     <p>Excelente! Agora, escolha o guia desejado:</p>
                     <div class="guides-container">
                         <a href="guide_pagarme_split.html" class="button guide-link">Guia de Venda com Split</a>
@@ -159,12 +88,10 @@
                 </div>
             </div>
         </main>
-        <section id="content-panel" class="hidden">
-            <iframe id="guide-frame" title="Guia de Integração Pagar.me"></iframe>
-        </section>
+        <section id="content-panel"></section>
     </div>
 
-    <footer>
+    <footer id="footer">
         Este não é um guia oficial Pagar.me.
     </footer>
 
@@ -174,9 +101,8 @@
             const step2 = document.getElementById('step-2');
             const appWrapper = document.getElementById('app-wrapper');
             const contentPanel = document.getElementById('content-panel');
-            const guideFrame = document.getElementById('guide-frame');
             const guideLinks = document.querySelectorAll('.guide-link');
-            const footer = document.querySelector('footer');
+            const footer = document.getElementById('footer');
 
             function activateStep2() {
                 step2.classList.remove('hidden');
@@ -191,18 +117,79 @@
                 activateStep2();
                 sessionStorage.setItem('pspButtonClicked', 'true');
             });
+            
+            async function loadGuide(url) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const text = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(text, 'text/html');
+                    const guideContent = doc.querySelector('.container');
+                    
+                    contentPanel.innerHTML = '';
+                    if (guideContent) {
+                        contentPanel.appendChild(guideContent);
+                        // Re-inicializa os scripts para o conteúdo carregado
+                        initializeGuideScripts(contentPanel);
+                    } else {
+                        contentPanel.innerHTML = '<p class="p-8 text-center text-red-500">Erro ao carregar o conteúdo do guia.</p>';
+                    }
+
+                } catch (error) {
+                    console.error('Falha ao carregar o guia:', error);
+                    contentPanel.innerHTML = `<p class="p-8 text-center text-red-500">Não foi possível carregar o guia. Verifique o console para mais detalhes.</p>`;
+                }
+            }
 
             guideLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const url = this.getAttribute('href');
-
                     appWrapper.classList.add('view-active');
-                    contentPanel.classList.remove('hidden');
-                    guideFrame.src = url;
-                    footer.style.display = 'none'; // Esconde o rodapé na visualização do guia
+                    footer.style.display = 'none';
+                    loadGuide(url);
                 });
             });
+            
+            function initializeGuideScripts(container) {
+                 beautifyJSONWithHighlight(container);
+                 setupTabs(container);
+            }
+
+            function setupTabs(container) {
+                container.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const step = tab.parentElement.dataset.step;
+                        const tabName = tab.dataset.tab;
+                        
+                        tab.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+                        tab.classList.add('tab-active');
+
+                        container.querySelectorAll(`.tab-content[data-step="${step}"]`).forEach(c => c.classList.add('hidden'));
+                        container.querySelector(`.tab-content[data-step="${step}"][data-tab="${tabName}"]`).classList.remove('hidden');
+                    });
+                });
+            }
+
+            function beautifyJSONWithHighlight(container) {
+                container.querySelectorAll('.code-block').forEach(block => {
+                    let html = block.innerHTML;
+                    const jsonMatch = html.match(/{[\s\S]*}/);
+                    if (!jsonMatch) return;
+                    
+                    let jsonHtml = jsonMatch[0];
+                    let coloredJson = jsonHtml.replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2');
+                    coloredJson = coloredJson.replace(/:(\s*)"((?:<span class="highlight">.*?<\/span>|[^"])*)"/g, ':$1<span class="json-string">"$2"</span>');
+                    coloredJson = coloredJson.replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>');
+                    coloredJson = coloredJson.replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>');
+                    coloredJson = coloredJson.replace(/:\s*"(\d{4}-\d{2}-\d{2})"/g, ': <span class="json-string">"$1"</span>');
+
+                    block.innerHTML = html.replace(jsonHtml, coloredJson);
+                });
+            }
         });
     </script>
 
