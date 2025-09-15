@@ -8,11 +8,11 @@
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             text-align: center; 
-            padding: 30px 15px 100px 15px; /* Padding ajustado */
+            padding: 30px 15px 100px 15px;
             margin: 0;
-            background-color: #f8f9fa; /* Fundo um pouco mais claro */
+            background-color: #f8f9fa;
         }
-        .container { /* Container principal para centralizar o conteúdo */
+        .container {
             max-width: 800px;
             margin: 0 auto;
         }
@@ -29,38 +29,48 @@
 
         /* --- Estilos dos Botões --- */
         .button { 
-            display: inline-block; /* Mudado para inline-block para os botões de seleção */
-            width: 100%; /* Largura total para mobile */
-            max-width: 320px; /* Largura máxima */
+            display: inline-block;
+            width: 100%;
+            max-width: 320px;
             padding: 18px 30px; 
             background-color: #00b055; 
             color: white; 
             text-decoration: none; 
-            border: none; /* Remove a borda padrão do <button> */
+            border: none;
             border-radius: 8px; 
             font-size: 1.2em; 
             font-weight: bold;
-            cursor: pointer; /* Muda o cursor para indicar que é clicável */
+            cursor: pointer;
             transition: all 0.3s ease; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
         }
         .button:hover { 
             background-color: #008f44; 
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            transform: translateY(-2px); /* Efeito de elevação */
+            transform: translateY(-2px);
+        }
+        /* --- ESTILO PARA O BOTÃO DESATIVADO (NOVO) --- */
+        .button:disabled {
+            background-color: #cccccc; /* Cor cinza para indicar que está inativo */
+            color: #666666;
+            cursor: not-allowed; /* Cursor de "não permitido" */
+            transform: none; /* Remove o efeito de elevação */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Mantém a sombra para consistência */
+        }
+        .button:disabled:hover {
+            background-color: #cccccc; /* Garante que a cor não mude no hover */
         }
 
         /* Container para os botões dos guias */
         .guides-container {
             display: flex;
-            flex-direction: column; /* Botões um embaixo do outro por padrão */
-            align-items: center; /* Centraliza os botões */
-            gap: 20px; /* Espaço entre os botões */
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
         }
 
-        /* --- CLASSE PARA ESCONDER ELEMENTOS --- */
         .hidden {
-            display: none !important; /* !important para garantir que o elemento seja escondido */
+            display: none !important;
         }
         
         footer {
@@ -76,11 +86,10 @@
             border-top: 1px solid #ddd; 
         }
 
-        /* Media queries para PC */
         @media (min-width: 768px) {
             .guides-container {
-                flex-direction: row; /* Lado a lado no PC */
-                justify-content: center; /* Centraliza na horizontal */
+                flex-direction: row;
+                justify-content: center;
             }
         }
     </style>
@@ -97,6 +106,7 @@
         </div>
 
         <div id="step-2" class="hidden">
+            <hr style="margin: 40px auto; border: 1px solid #e9ecef; width: 80%;">
             <p>Excelente! Agora, escolha o guia desejado:</p>
             <div class="guides-container">
                 <a href="guide-pagarme-split.html" class="button">Guia de Venda com Split</a>
@@ -111,16 +121,16 @@
     </footer>
 
     <script>
-        // 1. Seleciona os elementos que vamos manipular
         const pspButton = document.getElementById('pspButton');
         const step1 = document.getElementById('step-1');
         const step2 = document.getElementById('step-2');
 
-        // 2. Adiciona um "ouvinte de evento" que espera por um clique no botão
         pspButton.addEventListener('click', function() {
-            // 3. Quando o botão for clicado, executa estas ações:
-            step1.classList.add('hidden');    // Adiciona a classe 'hidden' para esconder a etapa 1
-            step2.classList.remove('hidden'); // Remove a classe 'hidden' para mostrar a etapa 2
+            // Apenas mostra a etapa 2, sem esconder a etapa 1
+            step2.classList.remove('hidden'); 
+            
+            // Desativa o botão para que não possa ser clicado novamente
+            pspButton.disabled = true;
         });
     </script>
 
