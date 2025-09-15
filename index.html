@@ -2,51 +2,67 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Pagar.me Guides</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guias de Integração Pagar.me</title>
     <style>
         body { 
-            font-family: sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             text-align: center; 
-            padding-top: 50px; 
-            padding-bottom: 100px; /* Espaço para o rodapé */
-            margin: 0; /* Remove margens padrão do body */
-            background-color: #f8f8f8; /* Um fundo suave */
+            padding: 30px 15px 100px 15px; /* Padding ajustado */
+            margin: 0;
+            background-color: #f8f9fa; /* Fundo um pouco mais claro */
+        }
+        .container { /* Container principal para centralizar o conteúdo */
+            max-width: 800px;
+            margin: 0 auto;
         }
         h1 { 
-            color: #333; 
-            margin-bottom: 30px;
+            color: #343a40; 
+            margin-bottom: 20px;
         }
         p {
-            color: #555;
-            margin-bottom: 40px;
+            color: #6c757d;
+            margin-bottom: 30px;
             font-size: 1.1em;
-        }
-        .buttons-container { /* Novo container para os botões */
-            display: flex; /* Permite que os botões fiquem lado a lado */
-            flex-wrap: wrap; /* Quebra para a linha de baixo em telas pequenas */
-            justify-content: center; /* Centraliza os botões */
-            gap: 20px; /* Espaço entre os botões */
-            margin-bottom: 50px;
-        }
-        a { 
-            display: block; /* Botões sempre em bloco para ocupar a largura disponível no mobile */
-            min-width: 250px; /* Largura mínima para os botões */
-            max-width: 300px; /* Largura máxima para os botões */
-            padding: 18px 30px; /* Espaçamento interno maior */
-            background-color: #00b055; /* NOVA COR DOS BOTÕES */
-            color: white; 
-            text-decoration: none; 
-            border-radius: 8px; /* Cantos mais arredondados */
-            font-size: 1.2em; /* Texto um pouco maior */
-            font-weight: bold;
-            transition: background-color 0.3s ease; /* Transição suave na cor */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil */
-        }
-        a:hover { 
-            background-color: #008f44; /* Cor mais escura ao passar o mouse */
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15); /* Sombra mais pronunciada */
+            line-height: 1.5;
         }
 
+        /* --- Estilos dos Botões --- */
+        .button { 
+            display: inline-block; /* Mudado para inline-block para os botões de seleção */
+            width: 100%; /* Largura total para mobile */
+            max-width: 320px; /* Largura máxima */
+            padding: 18px 30px; 
+            background-color: #00b055; 
+            color: white; 
+            text-decoration: none; 
+            border: none; /* Remove a borda padrão do <button> */
+            border-radius: 8px; 
+            font-size: 1.2em; 
+            font-weight: bold;
+            cursor: pointer; /* Muda o cursor para indicar que é clicável */
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .button:hover { 
+            background-color: #008f44; 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px); /* Efeito de elevação */
+        }
+
+        /* Container para os botões dos guias */
+        .guides-container {
+            display: flex;
+            flex-direction: column; /* Botões um embaixo do outro por padrão */
+            align-items: center; /* Centraliza os botões */
+            gap: 20px; /* Espaço entre os botões */
+        }
+
+        /* --- CLASSE PARA ESCONDER ELEMENTOS --- */
+        .hidden {
+            display: none !important; /* !important para garantir que o elemento seja escondido */
+        }
+        
         footer {
             position: fixed; 
             left: 0;
@@ -56,57 +72,57 @@
             color: #555; 
             text-align: center;
             padding: 15px 0; 
-            font-size: 0.9em; /* Ajuste para mobile */
+            font-size: 0.9em;
             border-top: 1px solid #ddd; 
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.05); /* Sombra para o rodapé */
         }
 
-        /* --- MEDIA QUERIES PARA RESPONSIVIDADE --- */
-        @media (max-width: 600px) { /* Para telas com largura máxima de 600px (smartphones) */
-            body {
-                padding-top: 30px;
-                padding-bottom: 80px;
-            }
-            h1 {
-                font-size: 1.8em;
-                margin-bottom: 20px;
-            }
-            p {
-                font-size: 1em;
-                margin-bottom: 30px;
-                padding: 0 15px; /* Adiciona um padding nas laterais em mobile */
-            }
-            a {
-                min-width: unset; /* Remove a largura mínima para ocupar mais espaço */
-                width: calc(100% - 40px); /* Ocupa quase 100% com padding */
-                margin: 0 auto 15px auto; /* Centraliza e adiciona margem inferior */
-                padding: 15px 20px;
-                font-size: 1.1em;
-            }
-            .buttons-container {
-                flex-direction: column; /* Força os botões a ficarem um embaixo do outro */
-                gap: 15px; /* Espaço menor entre os botões no mobile */
-            }
-            footer {
-                padding: 12px 0;
-                font-size: 0.85em;
+        /* Media queries para PC */
+        @media (min-width: 768px) {
+            .guides-container {
+                flex-direction: row; /* Lado a lado no PC */
+                justify-content: center; /* Centraliza na horizontal */
             }
         }
     </style>
 </head>
 <body>
-    <h1>Guias de Integração - API Pagar.me V5</h1>
-    <p>Escolha qual guia você deseja acessar:</p>
-    
-    <div class="buttons-container"> <a href="guide-pagarme-split.html">Fluxo de Venda com Split</a>
-        <a href="venda-simples-pagarme.html">Fluxo de Venda sem Slit</a>
+
+    <div class="container">
+
+        <h1>Guias de Integração - API Pagar.me V5</h1>
+
+        <div id="step-1">
+            <p>Selecione o tipo da sua conta Pagar.me:</p>
+            <button id="pspButton" class="button">PSP</button>
+        </div>
+
+        <div id="step-2" class="hidden">
+            <p>Excelente! Agora, escolha o guia desejado:</p>
+            <div class="guides-container">
+                <a href="guide-pagarme-split.html" class="button">Guia de Venda com Split</a>
+                <a href="venda-simples-pagarme.html" class="button">Guia de Venda Simples</a>
+            </div>
+        </div>
+
     </div>
 
     <footer>
         Este não é um guia oficial Pagar.me.
     </footer>
 
+    <script>
+        // 1. Seleciona os elementos que vamos manipular
+        const pspButton = document.getElementById('pspButton');
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+
+        // 2. Adiciona um "ouvinte de evento" que espera por um clique no botão
+        pspButton.addEventListener('click', function() {
+            // 3. Quando o botão for clicado, executa estas ações:
+            step1.classList.add('hidden');    // Adiciona a classe 'hidden' para esconder a etapa 1
+            step2.classList.remove('hidden'); // Remove a classe 'hidden' para mostrar a etapa 2
+        });
+    </script>
+
 </body>
 </html>
-
-
