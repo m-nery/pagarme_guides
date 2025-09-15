@@ -4,42 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guias de Integração Pagar.me</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            text-align: center; 
-            padding: 30px 15px 100px 15px;
-            margin: 0;
+            font-family: 'Inter', sans-serif;
             background-color: #f8f9fa;
+            color: #3f3f46;
+            overflow-x: hidden;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 { 
-            color: #343a40; 
-            margin-bottom: 20px;
-        }
-        p {
-            color: #6c757d;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-            line-height: 1.5;
-        }
-
-        /* --- Estilos dos Botões --- */
         .button { 
             display: inline-block;
             width: 100%;
-            max-width: 320px;
             padding: 18px 30px; 
             background-color: #00b055; 
             color: white; 
             text-decoration: none; 
             border: none;
             border-radius: 8px; 
-            font-size: 1.2em; 
-            font-weight: bold;
+            font-size: 1.1em; 
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
@@ -49,30 +33,42 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
             transform: translateY(-2px);
         }
-        /* --- ESTILO PARA O BOTÃO DESATIVADO (NOVO) --- */
         .button:disabled {
-            background-color: #cccccc; /* Cor cinza para indicar que está inativo */
+            background-color: #cccccc;
             color: #666666;
-            cursor: not-allowed; /* Cursor de "não permitido" */
-            transform: none; /* Remove o efeito de elevação */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Mantém a sombra para consistência */
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .button:disabled:hover {
-            background-color: #cccccc; /* Garante que a cor não mude no hover */
+            background-color: #cccccc;
         }
-
-        /* Container para os botões dos guias */
-        .guides-container {
+        .main-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+            transition: all 0.5s ease-in-out;
         }
-
-        .hidden {
-            display: none !important;
+        #nav-panel {
+            width: 100%;
+            transition: all 0.5s ease-in-out;
+            padding: 2rem;
         }
-        
+        #content-panel {
+            width: 0;
+            opacity: 0;
+            overflow-y: auto;
+            height: 100vh;
+            transition: all 0.5s ease-in-out;
+            background-color: #ffffff;
+        }
+        #nav-panel.active {
+            width: 30%;
+            text-align: left;
+        }
+        #content-panel.active {
+            width: 70%;
+            opacity: 1;
+            padding: 2rem;
+        }
         footer {
             position: fixed; 
             left: 0;
@@ -85,76 +81,137 @@
             font-size: 0.9em;
             border-top: 1px solid #ddd; 
         }
+        .hidden { display: none !important; }
 
-        @media (min-width: 768px) {
-            .guides-container {
-                flex-direction: row;
-                justify-content: center;
+        @media (max-width: 768px) {
+            #nav-panel.active {
+                width: 100%;
+                text-align: center;
+                height: auto;
+            }
+            #content-panel.active {
+                width: 100%;
+                height: auto;
+            }
+            .main-container {
+                flex-direction: column;
             }
         }
+        /* Estilos para os guias carregados */
+        .step-card { border: 1px solid #e5e7eb; }
+        .tab { transition: all 0.3s ease; }
+        .tab-active { background-color: #00b055; color: #ffffff; }
+        .code-block { background-color: #2d2d2d; color: #e0e0e0; padding: 1rem; border-radius: 0.5rem; font-family: 'monospace'; font-size: 0.875rem; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
+        .highlight { background-color: #a5b4fc; color: #1e1b4b; padding: 2px 4px; border-radius: 3px; }
+        .json-key { color: #9CDCFE; }
+        .json-string { color: #CE9178; }
+        .json-number { color: #B5CEA8; }
+        .json-boolean { color: #569CD6; }
+        .curl-command { color: #569CD6;}
+        .curl-header { color: #CE9178; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-
-        <h1>Guias de Integração - API Pagar.me V5</h1>
-
-        <div id="step-1">
-            <p>Selecione o tipo da sua conta Pagar.me:</p>
-            <button id="pspButton" class="button">PSP</button>
-        </div>
-
-        <div id="step-2" class="hidden">
-            <hr style="margin: 40px auto; border: 1px solid #e9ecef; width: 80%;">
-            <p>Excelente! Agora, escolha o guia desejado:</p>
-            <div class="guides-container">
-                <a href="guide-pagarme-split.html" class="button">Fluxo de Venda com Split</a>
-                <a href="venda-simples-pagarme.html" class="button">Fluxo de Venda sem Split</a>
+    <div class="main-container">
+        <div id="nav-panel" class="flex flex-col justify-center items-center h-screen">
+            <div class="w-full max-w-md text-center">
+                <div id="step-1">
+                    <h1 class="text-3xl font-bold text-gray-800">Guias de Integração</h1>
+                    <p class="text-gray-600 mt-2 mb-8">Selecione o tipo da sua conta Pagar.me:</p>
+                    <button id="pspButton" class="button mx-auto max-w-xs">PSP</button>
+                </div>
+                <div id="step-2" class="hidden">
+                     <hr style="margin: 40px auto; border: 1px solid #e9ecef; width: 80%;">
+                     <h2 class="text-2xl font-bold text-gray-800">Escolha o Guia</h2>
+                    <p class="text-gray-600 mt-2 mb-8">Excelente! Agora, escolha o guia desejado para visualizar o fluxo da API Pagar.me V5.</p>
+                    <div class="space-y-4">
+                        <button class="button guide-button" data-guide="guide_pagarme_split.html">Fluxo de Venda com Split</button>
+                        <button class="button guide-button" data-guide="venda_simples_pagarme.html">Fluxo de Venda sem Split</button>
+                    </div>
+                </div>
             </div>
         </div>
-
+        <div id="content-panel"></div>
     </div>
 
-    <footer>
+    <footer id="footer">
         Este não é um guia oficial Pagar.me.
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const pspButton = document.getElementById('pspButton');
+            const step1 = document.getElementById('step-1');
             const step2 = document.getElementById('step-2');
+            const guideButtons = document.querySelectorAll('.guide-button');
+            const navPanel = document.getElementById('nav-panel');
+            const contentPanel = document.getElementById('content-panel');
+            const footer = document.getElementById('footer');
 
-            // Verifica como a página foi carregada.
-            const navEntries = performance.getEntriesByType("navigation");
-            if (navEntries.length > 0 && navEntries[0].type === 'reload') {
-                // Se foi um refresh (F5), limpa o estado salvo.
-                sessionStorage.removeItem('pspButtonClicked');
-            }
-
-            // Função para ativar o estado "pressionado"
-            function activateStep2() {
-                step2.classList.remove('hidden');
-                pspButton.disabled = true;
-            }
-
-            // Ao carregar a página, verifica se o estado já existe no sessionStorage.
-            // Isso só será verdade se a navegação for de volta (e não um refresh).
-            if (sessionStorage.getItem('pspButtonClicked') === 'true') {
-                activateStep2();
-            }
-
-            // Adiciona o evento de clique ao botão
             pspButton.addEventListener('click', function() {
-                activateStep2();
-                // Salva o estado no sessionStorage para lembrar ao voltar dos guias.
-                sessionStorage.setItem('pspButtonClicked', 'true');
+                // Não esconde mais o step1
+                step2.classList.remove('hidden');
+                this.disabled = true;
             });
+
+            async function fetchGuide(guideFile) {
+                try {
+                    const response = await fetch(guideFile);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const html = await response.text();
+                    contentPanel.innerHTML = html;
+                    
+                    navPanel.classList.add('active');
+                    contentPanel.classList.add('active');
+                    footer.classList.add('hidden');
+
+                    initTabs();
+                    beautifyJSON();
+                } catch (error) {
+                    contentPanel.innerHTML = `<p class="text-red-500">Erro ao carregar o guia: ${error.message}</p>`;
+                }
+            }
+
+            guideButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const guideFile = button.dataset.guide;
+                    fetchGuide(guideFile);
+                });
+            });
+
+            function beautifyJSON() {
+                contentPanel.querySelectorAll('.code-block').forEach(block => {
+                    let html = block.innerHTML;
+                    const jsonMatch = html.match(/{[\s\S]*}/);
+                    if (!jsonMatch) return;
+                    let jsonHtml = jsonMatch[0];
+                    let coloredJson = jsonHtml.replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2')
+                        .replace(/:(\s*)"((?:<span class="highlight">.*?<\/span>|[^"])*)"/g, ':$1<span class="json-string">"$2"</span>')
+                        .replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>')
+                        .replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>')
+                        .replace(/:\s*"(\d{4}-\d{2}-\d{2})"/g, ': <span class="json-string">"$1"</span>');
+                    block.innerHTML = html.replace(jsonHtml, coloredJson);
+                });
+            }
+
+            function initTabs() {
+                contentPanel.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const step = tab.parentElement.dataset.step;
+                        const tabName = tab.dataset.tab;
+                        tab.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+                        tab.classList.add('tab-active');
+                        contentPanel.querySelectorAll(`.tab-content[data-step="${step}"]`).forEach(c => c.classList.add('hidden'));
+                        contentPanel.querySelector(`.tab-content[data-step="${step}"][data-tab="${tabName}"]`).classList.remove('hidden');
+                    });
+                });
+            }
         });
     </script>
 
 </body>
 </html>
-
-
 
