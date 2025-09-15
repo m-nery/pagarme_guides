@@ -323,33 +323,24 @@
     <script>
         function beautifyJSON() {
             document.querySelectorAll('.code-block').forEach(block => {
-                let textContent = block.innerText || block.textContent;
+                let html = block.innerHTML;
+
+                const jsonMatch = html.match(/{[\s\S]*}/);
+                if (!jsonMatch) return;
+
+                let jsonHtml = jsonMatch[0];
+
+                let coloredJson = jsonHtml.replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2');
                 
-                let jsonText;
-                const jsonMatch = textContent.match(/{[\s\S]*}/);
-                if (jsonMatch) {
-                    jsonText = jsonMatch[0];
-                } else {
-                    jsonText = textContent;
-                }
-
-                if (!jsonText.includes('{') && !jsonText.includes('}')) return;
+                coloredJson = coloredJson.replace(/:(\s*)"((?:<span class="highlight">.*?<\/span>|[^"])*)"/g, ':$1<span class="json-string">"$2"</span>');
                 
-                try {
-                    // This is just to validate, we use regex for coloring
-                    JSON.parse(jsonText);
+                coloredJson = coloredJson.replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>');
+                
+                coloredJson = coloredJson.replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>');
+                
+                coloredJson = coloredJson.replace(/:\s*"(\d{4}-\d{2}-\d{2})"/g, ': <span class="json-string">"$1"</span>');
 
-                    let coloredJson = jsonText
-                        .replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2')
-                        .replace(/:\s*"([^<"]*)"/g, ': <span class="json-string">"$1"</span>')
-                        .replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>')
-                        .replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>');
-
-                    block.innerHTML = block.innerHTML.replace(jsonText, coloredJson);
-
-                } catch (e) {
-                    // Not valid JSON, do nothing
-                }
+                block.innerHTML = html.replace(jsonHtml, coloredJson);
             });
         }
 
