@@ -157,9 +157,11 @@
                     <hr class="my-8 border-gray-200">
                     <h2 class="text-2xl font-bold text-gray-800">Escolha o Guia</h2>
                     <p class="text-gray-600 mt-2 mb-8">Excelente! Clique abaixo para carregar o guia.</p>
-                    <div class="space-y-4">
-                       <button id="guideSplitButton" class="button guide-button hidden" data-guide="guide_pagarme_split.html">Fluxo de Venda com Split</button>
-                       <button id="guideSimpleButton" class="button guide-button hidden" data-guide="venda_simples_pagarme.html">Fluxo de Venda sem Split</button>
+                    <div id="guides-container" class="space-y-4">
+                       <button class="button guide-button hidden" data-guide="guide_pagarme_split.html">Fluxo de Venda com Split (Cartão)</button>
+                       <button class="button guide-button hidden" data-guide="guide_pagarme_split_pix.html">Fluxo de Venda com Pix (Split)</button>
+                       <button class="button guide-button hidden" data-guide="venda_simples_pagarme.html">Fluxo de Venda sem Split (Cartão)</button>
+                       <button class="button guide-button hidden" data-guide="venda_pix_pagarme.html">Fluxo de Venda com Pix</button>
                     </div>
                 </div>
             </div>
@@ -178,13 +180,10 @@
             
             const step2 = document.getElementById('step-2');
             const step3 = document.getElementById('step-3');
-
-            const guideSplitButton = document.getElementById('guideSplitButton');
-            const guideSimpleButton = document.getElementById('guideSimpleButton');
             
             const navPanel = document.getElementById('nav-panel');
             const contentPanel = document.getElementById('content-panel');
-            const footer = document.getElementById('footer');
+            const guidesContainer = document.getElementById('guides-container');
 
             pspButton.addEventListener('click', function() {
                 step2.classList.remove('hidden');
@@ -195,16 +194,21 @@
                 this.disabled = true;
                 opWithoutSplit.disabled = false; 
                 step3.classList.remove('hidden');
-                guideSplitButton.classList.remove('hidden');
-                guideSimpleButton.classList.add('hidden'); 
+                
+                guidesContainer.querySelector('[data-guide="guide_pagarme_split.html"]').classList.remove('hidden');
+                guidesContainer.querySelector('[data-guide="guide_pagarme_split_pix.html"]').classList.remove('hidden');
+                guidesContainer.querySelector('[data-guide="venda_simples_pagarme.html"]').classList.add('hidden');
+                guidesContainer.querySelector('[data-guide="venda_pix_pagarme.html"]').classList.add('hidden');
             });
 
             opWithoutSplit.addEventListener('click', function() {
                 this.disabled = true;
                 opWithSplit.disabled = false; 
                 step3.classList.remove('hidden');
-                guideSimpleButton.classList.remove('hidden');
-                guideSplitButton.classList.add('hidden'); 
+                guidesContainer.querySelector('[data-guide="guide_pagarme_split.html"]').classList.add('hidden');
+                guidesContainer.querySelector('[data-guide="guide_pagarme_split_pix.html"]').classList.add('hidden');
+                guidesContainer.querySelector('[data-guide="venda_simples_pagarme.html"]').classList.remove('hidden');
+                guidesContainer.querySelector('[data-guide="venda_pix_pagarme.html"]').classList.remove('hidden');
             });
 
             async function fetchGuide(guideFile) {
@@ -233,7 +237,6 @@
                     fetchGuide(guideFile);
                 });
             });
-
 
             function beautifyJSON() {
                 contentPanel.querySelectorAll('.code-block').forEach(block => {
