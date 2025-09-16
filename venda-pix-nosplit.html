@@ -1,0 +1,144 @@
+<div class="container mx-auto p-4 md:p-8 max-w-4xl">
+
+    <header class="text-center mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Guia de Integração: Venda Simples com Pix</h1>
+        <p class="mt-4 text-lg text-gray-600">Um guia do fluxo da API Pagar.me para uma transação simples com Pix.</p>
+        <p class="mt-4 text-sm text-gray-500">Para detalhes completos, consulte a <a href="https://docs.pagar.me/reference/" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline font-medium">documentação oficial da Pagar.me</a>.</p>
+    </header>
+
+    <div class="space-y-8">
+
+        <!-- Step 1: Cliente -->
+        <div class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
+            <div class="flex items-center mb-4">
+                <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">1</div>
+                <h2 class="text-lg md:text-xl font-semibold ml-4">Cadastro do Cliente</h2>
+            </div>
+            <div class="border-b border-gray-200 mb-4">
+                <nav class="flex flex-wrap space-x-2" data-step="1">
+                    <button class="tab tab-active py-2 px-4 rounded-t-lg font-medium" data-tab="explanation">Explicação</button>
+                    <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="request">Requisição</button>
+                    <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="response">Resposta</button>
+                </nav>
+            </div>
+            <div>
+                <div class="tab-content" data-step="1" data-tab="explanation">
+                    <p>O primeiro passo é cadastrar o cliente que fará a compra. O `customer_id` retornado será usado na criação do pedido.</p>
+                    <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-cliente-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-cliente-1</a></p>
+                </div>
+                <div class="tab-content hidden" data-step="1" data-tab="request">
+                    <div class="code-block"><span class="curl-command">curl</span> --request POST \
+--url https://api.pagar.me/core/v5/customers \
+--header <span class="curl-header">'Authorization: Basic c2tfdGVzdF9waXhleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
+{
+  "name": "Tony Stark",
+  "email": "avengerstark@starkindustries.com.br",
+  "document": "87232965001",
+  "type": "individual"
+}
+'</div>
+                </div>
+                <div class="tab-content hidden" data-step="1" data-tab="response">
+                    <div class="code-block">{
+  "id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
+  "name": "Tony Stark",
+  "status": "active"
+}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Step 2: Pedido com Pix -->
+        <div class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
+            <div class="flex items-center mb-4">
+                <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">2</div>
+                <h2 class="text-lg md:text-xl font-semibold ml-4">Criação do Pedido com Pix</h2>
+            </div>
+            <div class="border-b border-gray-200 mb-4">
+                <nav class="flex flex-wrap space-x-2" data-step="2">
+                    <button class="tab tab-active py-2 px-4 rounded-t-lg font-medium" data-tab="explanation">Explicação</button>
+                    <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="request">Requisição</button>
+                    <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="response">Resposta</button>
+                </nav>
+            </div>
+            <div>
+                <div class="tab-content" data-step="2" data-tab="explanation">
+                    <p>Crie o pedido usando o `customer_id` e o método de pagamento `pix`. A API retornará o QR Code e a URL para o pagamento.</p>
+                    <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-pedido" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-pedido</a></p>
+                </div>
+                <div class="tab-content hidden" data-step="2" data-tab="request">
+                    <div class="code-block"><span class="curl-command">curl</span> --request POST \
+--url https://api.pagar.me/core/v5/orders \
+--header <span class="curl-header">'Authorization: Basic c2tfdGVzdF9waXhleGFtcGxlOg=='</span> \
+--header <span class="curl-header">'Content-Type: application/json'</span> \
+--data '
+{
+  "customer_id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
+  "items": [{
+    "amount": 15000,
+    "description": "Item de Teste (Pix)",
+    "quantity": 1,
+    "code": "ITEM-PIX-001"
+  }],
+  "payments": [{
+    "payment_method": "pix",
+    "pix": {
+      "expires_in": 3600
+    }
+  }]
+}
+'</div>
+                </div>
+                <div class="tab-content hidden" data-step="2" data-tab="response">
+                    <div class="code-block">{
+  "id": "or_xxxxxxxxxxxxxxxx",
+  "status": "pending",
+  "charges": [{
+    "id": "<span class="highlight">ch_xxxxxxxxxxxxxxxx</span>",
+    "status": "pending",
+    "last_transaction": {
+      "qr_code": "<span class="highlight">00020126...</span>",
+      "qr_code_url": "https://api.pagar.me/pix/qr_code.png",
+      "expires_at": "2025-09-16T16:10:00Z"
+    }
+  }]
+}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Webhooks -->
+        <div class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
+            <div class="flex items-center mb-4">
+                <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">3</div>
+                <h2 class="text-lg md:text-xl font-semibold ml-4">Confirmação via Webhook</h2>
+            </div>
+            <div class="border-b border-gray-200 mb-4">
+                <nav class="flex flex-wrap space-x-2" data-step="3">
+                    <button class="tab tab-active py-2 px-4 rounded-t-lg font-medium" data-tab="explanation">Explicação</button>
+                    <button class="tab py-2 px-4 rounded-t-lg font-medium" data-tab="response">Exemplo de Payload</button>
+                </nav>
+            </div>
+            <div>
+                <div class="tab-content" data-step="3" data-tab="explanation">
+                    <p>O pagamento Pix é assíncrono. Para confirmar que o pagamento foi realizado, você deve configurar um webhook e aguardar o evento <strong>charge.paid</strong>.</p>
+                    <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/docs/conceitos-importantes-sobre-webhooks" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/docs/conceitos-importantes-sobre-webhooks</a></p>
+                </div>
+                <div class="tab-content hidden" data-step="3" data-tab="response">
+                    <div class="code-block">{
+  "type": "charge.paid",
+  "data": {
+    "id": "<span class="highlight">ch_xxxxxxxxxxxxxxxx</span>",
+    "status": "paid",
+    "amount": 15000
+  }
+}</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
