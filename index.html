@@ -72,18 +72,30 @@
             opacity: 1;
             padding: 2rem;
         }
-        footer {
-            position: fixed; 
+        #footer {
+            position: fixed;
             left: 0;
             bottom: 0;
             width: 100%;
-            background-color: #f2f2f2; 
-            color: #555; 
+            background-color: #f2f2f2;
+            color: #555;
             text-align: center;
-            padding: 15px 0; 
+            padding: 15px 0;
             font-size: 0.9em;
-            border-top: 1px solid #ddd; 
+            border-top: 1px solid #ddd;
+            transition: all 0.5s ease-in-out;
         }
+        #nav-panel.active #footer {
+            position: relative;
+            background-color: transparent;
+            border-top: none;
+            color: #6c757d;
+            font-size: 0.8em;
+            margin-top: auto;
+            padding: 1rem 0;
+            width: 100%;
+        }
+
         .hidden { display: none !important; }
 
         @media (max-width: 1024px) {
@@ -100,6 +112,10 @@
             }
             .main-container {
                 flex-direction: column;
+            }
+             #nav-panel.active #footer {
+                padding-top: 2rem;
+                margin-top: 1rem;
             }
         }
         /* Estilos para os guias carregados */
@@ -146,15 +162,13 @@
                        <button id="guideSimpleButton" class="button guide-button hidden" data-guide="venda_simples_pagarme.html">Fluxo de Venda sem Split</button>
                     </div>
                 </div>
-
             </div>
+            <footer id="footer">
+                Este não é um guia oficial Pagar.me.
+            </footer>
         </div>
         <div id="content-panel"></div>
     </div>
-
-    <footer id="footer">
-        Este não é um guia oficial Pagar.me.
-    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -179,18 +193,18 @@
 
             opWithSplit.addEventListener('click', function() {
                 this.disabled = true;
-                opWithoutSplit.disabled = false; // Re-enable the other button
+                opWithoutSplit.disabled = false; 
                 step3.classList.remove('hidden');
                 guideSplitButton.classList.remove('hidden');
-                guideSimpleButton.classList.add('hidden'); // Hide the other guide
+                guideSimpleButton.classList.add('hidden'); 
             });
 
             opWithoutSplit.addEventListener('click', function() {
                 this.disabled = true;
-                opWithSplit.disabled = false; // Re-enable the other button
+                opWithSplit.disabled = false; 
                 step3.classList.remove('hidden');
                 guideSimpleButton.classList.remove('hidden');
-                guideSplitButton.classList.add('hidden'); // Hide the other guide
+                guideSplitButton.classList.add('hidden'); 
             });
 
             async function fetchGuide(guideFile) {
@@ -203,8 +217,8 @@
                     contentPanel.innerHTML = html;
                     
                     navPanel.classList.add('active');
+                    navPanel.classList.remove('justify-center');
                     contentPanel.classList.add('active');
-                    footer.classList.add('hidden');
 
                     initTabs();
                     beautifyJSON();
