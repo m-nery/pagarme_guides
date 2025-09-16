@@ -140,7 +140,14 @@
                 <div id="step-1">
                     <h1 class="text-3xl font-bold text-gray-800">Guias de Integração</h1>
                     <p class="text-gray-600 mt-2 mb-8">Selecione o tipo da sua conta Pagar.me:</p>
-                    <button id="pspButton" class="button mx-auto max-w-xs">PSP</button>
+                    <div class="relative inline-block group mx-auto max-w-xs">
+                        <button id="pspButton" class="button">PSP</button>
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 p-3 bg-gray-800 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 invisible group-hover:visible z-10">
+                            <h4 class="font-bold text-base">PSP (Provedor de Serviços de Pagamento)</h4>
+                            <p class="mt-1 text-left">No modelo PSP, o Pagar.me é o responsável por todo o fluxo de pagamento, incluindo a relação com as bandeiras e bancos, e assume o risco da transação.</p>
+                            <div class="absolute left-1/2 -translate-x-1/2 bottom-[-8px] w-4 h-4 bg-gray-800 transform rotate-45"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="step-2" class="hidden mt-8">
