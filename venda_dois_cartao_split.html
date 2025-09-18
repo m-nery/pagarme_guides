@@ -1,284 +1,242 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guias de Integração Pagar.me</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { 
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
-            color: #3f3f46;
-            overflow-x: hidden;
-        }
-        .button { 
-            display: inline-block;
-            width: 100%;
-            padding: 18px 30px; 
-            background-color: #00b055; 
-            color: white; 
-            text-decoration: none; 
-            border: none;
-            border-radius: 8px; 
-            font-size: 1.1em; 
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-        }
-        .button:hover { 
-            background-color: #008f44; 
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            transform: translateY(-2px);
-        }
-        .button:disabled {
-            background-color: #cccccc;
-            color: #666666;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .button:disabled:hover {
-            background-color: #cccccc;
-        }
-        .main-container {
-            display: flex;
-            transition: all 0.5s ease-in-out;
-        }
-        #nav-panel {
-            width: 100%;
-            transition: all 0.5s ease-in-out;
-            padding: 2rem;
-        }
-        #content-panel {
-            width: 0;
-            opacity: 0;
-            overflow-y: auto;
-            height: 100vh;
-            transition: all 0.5s ease-in-out;
-            background-color: #ffffff;
-            border-left: 1px solid #e5e7eb;
-        }
-        #nav-panel.active {
-            width: 30%;
-            text-align: left;
-            height: 100vh;
-            overflow-y: auto;
-        }
-        #content-panel.active {
-            width: 70%;
-            opacity: 1;
-            padding: 2rem;
-        }
-        #footer {
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            background-color: #f2f2f2;
-            color: #555;
-            text-align: center;
-            padding: 15px 0;
-            font-size: 0.9em;
-            border-top: 1px solid #ddd;
-            transition: all 0.5s ease-in-out;
-        }
-        #nav-panel.active #footer {
-            position: relative;
-            background-color: transparent;
-            border-top: none;
-            color: #6c757d;
-            font-size: 0.8em;
-            margin-top: auto;
-            padding: 1rem 0;
-            width: 100%;
-        }
+<div class="container mx-auto p-4 md:p-8 max-w-4xl">
 
-        .hidden { display: none !important; }
+    <header class="text-center mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Guia: Venda com dois Cartões e Split</h1>
+        <p class="mt-4 text-lg text-gray-600">Um guia do fluxo da API Pagar.me para uma transação multimeios com divisão de valores.</p>
+         <p class="mt-4 text-sm text-gray-500">Para detalhes completos sobre cada endpoint, consulte a <a href="https://docs.pagar.me/reference/" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline font-medium">documentação oficial da Pagar.me</a>.</p>
+    </header>
 
-        @media (max-width: 1024px) {
-            #nav-panel.active {
-                width: 100%;
-                text-align: center;
-                height: auto;
-                border-bottom: 1px solid #e5e7eb;
-            }
-            #content-panel.active {
-                width: 100%;
-                height: auto;
-                border-left: none;
-            }
-            .main-container {
-                flex-direction: column;
-            }
-             #nav-panel.active #footer {
-                padding-top: 2rem;
-                margin-top: 1rem;
-            }
-        }
-        /* Estilos para os guias carregados */
-        .step-card { border: 1px solid #e5e7eb; margin-bottom: 2rem; }
-        .tab { transition: all 0.3s ease; }
-        .tab-active { background-color: #00b055; color: #ffffff; }
-        .code-block { background-color: #2d2d2d; color: #e0e0e0; padding: 1rem; border-radius: 0.5rem; font-family: 'monospace'; font-size: 0.875rem; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
-        .highlight { background-color: #a5b4fc; color: #1e1b4b; padding: 2px 4px; border-radius: 3px; }
-        .json-key { color: #9CDCFE; }
-        .json-string { color: #CE9178; }
-        .json-number { color: #B5CEA8; }
-        .json-boolean { color: #569CD6; }
-        .curl-command { color: #569CD6;}
-        .curl-header { color: #CE9178; }
-    </style>
-</head>
-<body>
+    <div class="space-y-8">
 
-    <div class="main-container">
-        <div id="nav-panel" class="flex flex-col justify-center items-center h-screen">
-            <div class="w-full max-w-md text-center">
-                <div id="step-1">
-                    <h1 class="text-3xl font-bold text-gray-800">Guias de Integração</h1>
-                    <p class="text-gray-600 mt-2 mb-8">Selecione o tipo da sua conta Pagar.me:</p>
-                    <div class="relative inline-block group mx-auto max-w-xs">
-                        <button id="pspButton" class="button">PSP</button>
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 p-3 bg-gray-800 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 invisible group-hover:visible z-10">
-                            <h4 class="font-bold text-base">PSP (Provedor de Serviços de Pagamento)</h4>
-                            <p class="mt-1 text-left">No modelo PSP, o Pagar.me é o responsável por todo o fluxo de pagamento, incluindo a relação com as bandeiras e bancos, e assume o risco da transação.</p>
-                            <div class="absolute left-1/2 -translate-x-1/2 bottom-[-8px] w-4 h-4 bg-gray-800 transform rotate-45"></div>
-                        </div>
+        <!-- Step 1: Create Recipients -->
+        <div class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
+            <div class="flex items-center mb-4">
+                <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">1</div>
+                <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Criação dos Recebedores</h2>
+            </div>
+            <div class="border-b border-gray-200 mb-4">
+                <nav class="flex flex-wrap space-x-2" data-step="1">
+                    <button class="tab tab-active py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="explanation">Explicação</button>
+                    <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="request">Requisição</button>
+                    <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="response">Resposta</button>
+                </nav>
+            </div>
+            <div class="content-container">
+                <div class="tab-content" data-step="1" data-tab="explanation">
+                    <p>O primeiro passo é cadastrar os recebedores (sellers) que participarão da divisão de valores. O `recipient_id` retornado será usado na criação do pedido.</p>
+                    <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-recebedor-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-recebedor-1</a></p>
+                </div>
+                <div class="tab-content hidden" data-step="1" data-tab="request">
+                    <div class="code-block" id="request-1-split-2cards">... (Mesma requisição do Passo 1 do Guia de Split) ...</div>
+                </div>
+                <div class="tab-content hidden" data-step="1" data-tab="response">
+                    <div class="code-block" id="response-1-split-2cards">{
+  "id": "<span class="highlight">re_xxxxxxxxxxxxxxxx</span>",
+  "name": "Stark Industries",
+  "status": "active"
+}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Step 2: Create Customer -->
+        <div class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
+            <div class="flex items-center mb-4">
+                <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">2</div>
+                <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Cadastro do Cliente</h2>
+            </div>
+             <div class="border-b border-gray-200 mb-4">
+                <nav class="flex flex-wrap space-x-2" data-step="2">
+                    <button class="tab tab-active py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="explanation">Explicação</button>
+                    <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="request">Requisição</button>
+                    <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="response">Resposta</button>
+                </nav>
+            </div>
+            <div class="content-container">
+                 <div class="tab-content" data-step="2" data-tab="explanation">
+                    <p>Cadastre o cliente que fará a compra. O `customer_id` retornado será usado nas próximas etapas.</p>
+                    <p class="mt-4 text-sm"><strong>Link da documentação:</strong> <a href="https://docs.pagar.me/reference/criar-cliente-1" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">https://docs.pagar.me/reference/criar-cliente-1</a></p>
+                </div>
+                <div class="tab-content hidden" data-step="2" data-tab="request">
+                    <div class="code-block" id="request-2-split-2cards">... (Mesma requisição do Passo 2 do Guia de Split) ...</div>
+                </div>
+                <div class="tab-content hidden" data-step="2" data-tab="response">
+                    <div class="code-block" id="response-2-split-2cards">{
+  "id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
+  "name": "Steve Rogers",
+  "status": "active"
+}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3 & 4: Create Tokens -->
+        <div class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
+             <div class="flex items-center mb-4">
+                <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">3</div>
+                <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Criação dos Tokens dos Cartões</h2>
+            </div>
+             <div class="border-b border-gray-200 mb-4">
+                <nav class="flex flex-wrap space-x-2" data-step="3">
+                    <button class="tab tab-active py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="explanation">Explicação</button>
+                    <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="request">Requisição</button>
+                    <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="response">Resposta</button>
+                </nav>
+            </div>
+            <div class="content-container">
+                <div class="tab-content" data-step="3" data-tab="explanation">
+                    <p>Execute esta etapa no front-end da sua aplicação, usando sua <strong>chave pública (`public_key`)</strong>. É necessário gerar um token para <strong>cada cartão</strong> que será usado no pagamento.</p>
+                </div>
+                <div class="tab-content hidden" data-step="3" data-tab="request">
+                    <div class="code-block" id="request-3-split-2cards">
+# Requisição para o Cartão 1
+{ "type": "card", "card": { ... } }
+
+# Requisição para o Cartão 2
+{ "type": "card", "card": { ... } }
                     </div>
                 </div>
+                <div class="tab-content hidden" data-step="3" data-tab="response">
+                    <div class="code-block" id="response-3-split-2cards">
+# Resposta para o Cartão 1
+{
+  "id": "<span class="highlight">token_xxxxxxxxxxxxxxx1</span>",
+  "type": "card"
+}
 
-                <div id="step-2" class="hidden mt-8">
-                     <hr class="my-8 border-gray-200">
-                     <h2 class="text-2xl font-bold text-gray-800">Tipo de Operação</h2>
-                    <p class="text-gray-600 mt-2 mb-8">Agora, escolha o tipo de operação que deseja visualizar.</p>
-                    <div class="space-y-4">
-                        <button id="opWithSplit" class="button">Operação com Split</button>
-                        <button id="opWithoutSplit" class="button">Operação sem Split</button>
-                    </div>
-                </div>
-
-                <div id="step-3" class="hidden mt-8">
-                    <hr class="my-8 border-gray-200">
-                    <h2 class="text-2xl font-bold text-gray-800">Escolha o Guia</h2>
-                    <p class="text-gray-600 mt-2 mb-8">Excelente! Clique abaixo para carregar o guia.</p>
-                    <div id="guides-container" class="space-y-4">
-                       <button class="button guide-button hidden" data-guide="venda_cartao_split.html">Venda com Cartão (Split)</button>
-                       <button class="button guide-button hidden" data-guide="venda_dois_cartoes_split.html">Venda com dois Cartões (Split)</button>
-                       <button class="button guide-button hidden" data-guide="venda_pix_split.html">Venda com Pix (Split)</button>
-                       <button class="button guide-button hidden" data-guide="venda_cartao_nosplit.html">Venda com Cartão</button>
-                       <button class="button guide-button hidden" data-guide="venda_pix_nosplit.html">Venda com Pix</button>
+# Resposta para o Cartão 2
+{
+  "id": "<span class="highlight">token_xxxxxxxxxxxxxxx2</span>",
+  "type": "card"
+}
                     </div>
                 </div>
             </div>
-            <footer id="footer">
-                Este não é um guia oficial Pagar.me.
-            </footer>
         </div>
-        <div id="content-panel"></div>
+
+        <!-- Step 4: Create Cards -->
+        <div class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
+             <div class="flex items-center mb-4">
+                <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">4</div>
+                <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Criação dos Cartões a partir dos Tokens</h2>
+            </div>
+             <div class="border-b border-gray-200 mb-4">
+                <nav class="flex flex-wrap space-x-2" data-step="4">
+                    <button class="tab tab-active py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="explanation">Explicação</button>
+                    <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="request">Requisição</button>
+                    <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="response">Resposta</button>
+                </nav>
+            </div>
+            <div class="content-container">
+                <div class="tab-content" data-step="4" data-tab="explanation">
+                    <p>No seu back-end, salve os cartões no cofre da Pagar.me usando o `customer_id` e os `tokens` gerados. Você terá um `card_id` para cada cartão.</p>
+                </div>
+                <div class="tab-content hidden" data-step="4" data-tab="request">
+                    <div class="code-block" id="request-4-split-2cards">
+# Requisição para salvar o Cartão 1
+POST /customers/<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>/cards
+{ "token": "<span class="highlight">token_xxxxxxxxxxxxxxx1</span>" }
+
+# Requisição para salvar o Cartão 2
+POST /customers/<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>/cards
+{ "token": "<span class="highlight">token_xxxxxxxxxxxxxxx2</span>" }
+                    </div>
+                </div>
+                <div class="tab-content hidden" data-step="4" data-tab="response">
+                    <div class="code-block" id="response-4-split-2cards">
+# Resposta para o Cartão 1
+{ "id": "<span class="highlight">card_xxxxxxxxxxxxxxx1</span>", ... }
+
+# Resposta para o Cartão 2
+{ "id": "<span class="highlight">card_xxxxxxxxxxxxxxx2</span>", ... }
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Step 5: Create Order -->
+        <div class="step-card bg-white p-4 md:p-6 rounded-xl shadow-sm">
+             <div class="flex items-center mb-4">
+                <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">5</div>
+                <h2 class="text-lg md:text-xl font-semibold ml-4 text-gray-800">Criação do Pedido Multimeios com Split</h2>
+            </div>
+             <div class="border-b border-gray-200 mb-4">
+                <nav class="flex flex-wrap space-x-2" data-step="5">
+                    <button class="tab tab-active py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="explanation">Explicação</button>
+                    <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="request">Requisição</button>
+                    <button class="tab py-2 px-3 sm:px-4 rounded-t-lg font-medium text-sm sm:text-base" data-tab="response">Resposta</button>
+                </nav>
+            </div>
+            <div class="content-container">
+                <div class="tab-content" data-step="5" data-tab="explanation">
+                    <p>Crie o pedido com dois objetos no array `payments`, um para cada cartão. Cada pagamento terá seu `amount`, seu `card_id` e sua própria regra de `split`.</p>
+                </div>
+                <div class="tab-content hidden" data-step="5" data-tab="request">
+                    <div class="code-block" id="request-5-split-2cards">{
+  "customer_id": "<span class="highlight">cus_xxxxxxxxxxxxxxxx</span>",
+  "items": [{
+      "amount": 30000,
+      "description": "Item Total",
+      "quantity": 1
+  }],
+  "payments": [
+    {
+      "payment_method": "credit_card",
+      "amount": 10000,
+      "credit_card": {
+        "capture": true,
+        "card_id": "<span class="highlight">card_xxxxxxxxxxxxxxx1</span>"
+      },
+      "split": [{
+          "amount": 9000,
+          "recipient_id": "<span class="highlight">re_xxxxxxxxxxxxxxx_A</span>",
+          "type": "flat"
+      },{
+          "amount": 1000,
+          "recipient_id": "<span class="highlight">re_xxxxxxxxxxxxxxx_B</span>",
+          "type": "flat"
+      }]
+    },
+    {
+      "payment_method": "credit_card",
+      "amount": 20000,
+      "credit_card": {
+        "capture": true,
+        "card_id": "<span class="highlight">card_xxxxxxxxxxxxxxx2</span>"
+      },
+      "split": [{
+          "amount": 18000,
+          "recipient_id": "<span class="highlight">re_xxxxxxxxxxxxxxx_A</span>",
+          "type": "flat"
+      },{
+          "amount": 2000,
+          "recipient_id": "<span class="highlight">re_xxxxxxxxxxxxxxx_B</span>",
+          "type": "flat"
+      }]
+    }
+  ]
+}</div>
+                </div>
+                <div class="tab-content hidden" data-step="5" data-tab="response">
+                    <div class="code-block" id="response-5-split-2cards">{
+  "id": "or_xxxxxxxxxxxxxxxx",
+  "status": "paid",
+  "charges": [
+    {
+      "id": "<span class="highlight">ch_xxxxxxxxxxxxxxx1</span>",
+      "amount": 10000,
+      "status": "paid"
+    },
+    {
+      "id": "<span class="highlight">ch_xxxxxxxxxxxxxxx2</span>",
+      "amount": 20000,
+      "status": "paid"
+    }
+  ]
+}</div>
+                </div>
+            </div>
+        </div>
+        
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const pspButton = document.getElementById('pspButton');
-            const opWithSplit = document.getElementById('opWithSplit');
-            const opWithoutSplit = document.getElementById('opWithoutSplit');
-            
-            const step2 = document.getElementById('step-2');
-            const step3 = document.getElementById('step-3');
-            
-            const navPanel = document.getElementById('nav-panel');
-            const contentPanel = document.getElementById('content-panel');
-            const guidesContainer = document.getElementById('guides-container');
-
-            pspButton.addEventListener('click', function() {
-                step2.classList.remove('hidden');
-                this.disabled = true;
-            });
-
-            opWithSplit.addEventListener('click', function() {
-                this.disabled = true;
-                opWithoutSplit.disabled = false; 
-                step3.classList.remove('hidden');
-                
-                guidesContainer.querySelector('[data-guide="venda_cartao_split.html"]').classList.remove('hidden');
-                guidesContainer.querySelector('[data-guide="venda_pix_split.html"]').classList.remove('hidden');
-                guidesContainer.querySelector('[data-guide="venda_dois_cartoes_split.html"]').classList.remove('hidden');
-                guidesContainer.querySelector('[data-guide="venda_cartao_nosplit.html"]').classList.add('hidden');
-                guidesContainer.querySelector('[data-guide="venda_pix_nosplit.html"]').classList.add('hidden');
-            });
-
-            opWithoutSplit.addEventListener('click', function() {
-                this.disabled = true;
-                opWithSplit.disabled = false; 
-                step3.classList.remove('hidden');
-                guidesContainer.querySelector('[data-guide="venda_cartao_split.html"]').classList.add('hidden');
-                guidesContainer.querySelector('[data-guide="venda_pix_split.html"]').classList.add('hidden');
-                guidesContainer.querySelector('[data-guide="venda_dois_cartoes_split.html"]').classList.add('hidden');
-                guidesContainer.querySelector('[data-guide="venda_cartao_nosplit.html"]').classList.remove('hidden');
-                guidesContainer.querySelector('[data-guide="venda_pix_nosplit.html"]').classList.remove('hidden');
-            });
-
-            async function fetchGuide(guideFile) {
-                try {
-                    const response = await fetch(guideFile);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const html = await response.text();
-                    contentPanel.innerHTML = html;
-                    
-                    navPanel.classList.add('active');
-                    navPanel.classList.remove('justify-center');
-                    contentPanel.classList.add('active');
-
-                    initTabs();
-                    beautifyJSON();
-                } catch (error) {
-                    contentPanel.innerHTML = `<p class="text-red-500 p-8">Erro ao carregar o guia: ${error.message}. Verifique se o nome do arquivo está correto.</p>`;
-                }
-            }
-            
-            document.querySelectorAll('.guide-button').forEach(button => {
-                 button.addEventListener('click', () => {
-                    const guideFile = button.dataset.guide;
-                    fetchGuide(guideFile);
-                });
-            });
-
-
-            function beautifyJSON() {
-                contentPanel.querySelectorAll('.code-block').forEach(block => {
-                    let html = block.innerHTML;
-                    const jsonMatch = html.match(/{[\s\S]*}/);
-                    if (!jsonMatch) return;
-                    let jsonHtml = jsonMatch[0];
-                    let coloredJson = jsonHtml.replace(/"([^"]+)"(\s*:)/g, '<span class="json-key">"$1"</span>$2')
-                        .replace(/:(\s*)"((?:<span class="highlight">.*?<\/span>|[^"])*)"/g, ':$1<span class="json-string">"$2"</span>')
-                        .replace(/:\s*(-?\d+(\.\d+)?)(?=[,\s}])/g, ': <span class="json-number">$1</span>')
-                        .replace(/:\s*(true|false)(?=[,\s}])/g, ': <span class="json-boolean">$1</span>')
-                        .replace(/:\s*"(\d{4}-\d{2}-\d{2})"/g, ': <span class="json-string">"$1"</span>');
-                    block.innerHTML = html.replace(jsonHtml, coloredJson);
-                });
-            }
-
-            function initTabs() {
-                contentPanel.querySelectorAll('.tab').forEach(tab => {
-                    tab.addEventListener('click', () => {
-                        const step = tab.parentElement.dataset.step;
-                        const tabName = tab.dataset.tab;
-                        tab.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
-                        tab.classList.add('tab-active');
-                        contentPanel.querySelectorAll(`.tab-content[data-step="${step}"]`).forEach(c => c.classList.add('hidden'));
-                        contentPanel.querySelector(`.tab-content[data-step="${step}"][data-tab="${tabName}"]`).classList.remove('hidden');
-                    });
-                });
-            }
-        });
-    </script>
-
-</body>
-</html>
-
+</div>
