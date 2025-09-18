@@ -144,7 +144,7 @@
                         <button id="pspButton" class="button">PSP</button>
                         <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 p-3 bg-gray-800 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 invisible group-hover:visible z-10">
                             <h4 class="font-bold text-base">PSP (Provedor de Serviços de Pagamento)</h4>
-                            <p class="mt-1 text-left">No modelo PSP, o Pagar.me é o responsável por todo o fluxo de pagamento, incluindo a relação com as bandeiras, bancos e adquirentes.</p>
+                            <p class="mt-1 text-left">No modelo PSP, o Pagar.me é o responsável por todo o fluxo de pagamento, incluindo a relação com as bandeiras e bancos, e assume o risco da transação.</p>
                             <div class="absolute left-1/2 -translate-x-1/2 bottom-[-8px] w-4 h-4 bg-gray-800 transform rotate-45"></div>
                         </div>
                     </div>
@@ -166,6 +166,7 @@
                     <p class="text-gray-600 mt-2 mb-8">Excelente! Clique abaixo para carregar o guia.</p>
                     <div id="guides-container" class="space-y-4">
                        <button class="button guide-button hidden" data-guide="venda_cartao_split.html">Venda com Cartão (Split)</button>
+                       <button class="button guide-button hidden" data-guide="venda_dois_cartoes_split.html">Venda com dois Cartões (Split)</button>
                        <button class="button guide-button hidden" data-guide="venda_pix_split.html">Venda com Pix (Split)</button>
                        <button class="button guide-button hidden" data-guide="venda_cartao_nosplit.html">Venda com Cartão</button>
                        <button class="button guide-button hidden" data-guide="venda_pix_nosplit.html">Venda com Pix</button>
@@ -204,6 +205,7 @@
                 
                 guidesContainer.querySelector('[data-guide="venda_cartao_split.html"]').classList.remove('hidden');
                 guidesContainer.querySelector('[data-guide="venda_pix_split.html"]').classList.remove('hidden');
+                guidesContainer.querySelector('[data-guide="venda_dois_cartoes_split.html"]').classList.remove('hidden');
                 guidesContainer.querySelector('[data-guide="venda_cartao_nosplit.html"]').classList.add('hidden');
                 guidesContainer.querySelector('[data-guide="venda_pix_nosplit.html"]').classList.add('hidden');
             });
@@ -214,6 +216,7 @@
                 step3.classList.remove('hidden');
                 guidesContainer.querySelector('[data-guide="venda_cartao_split.html"]').classList.add('hidden');
                 guidesContainer.querySelector('[data-guide="venda_pix_split.html"]').classList.add('hidden');
+                guidesContainer.querySelector('[data-guide="venda_dois_cartoes_split.html"]').classList.add('hidden');
                 guidesContainer.querySelector('[data-guide="venda_cartao_nosplit.html"]').classList.remove('hidden');
                 guidesContainer.querySelector('[data-guide="venda_pix_nosplit.html"]').classList.remove('hidden');
             });
@@ -278,5 +281,4 @@
 
 </body>
 </html>
-
 
